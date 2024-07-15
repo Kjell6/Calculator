@@ -187,7 +187,6 @@ public class View extends JFrame implements ICalculatorInterface {
     @Override
     public void displayNumberChange(String number) {
         display.setText(number);
-        //display.setText(number.replaceAll("0*$", "").replaceAll("\\.$", ""));
     }
 
     @Override
@@ -230,30 +229,6 @@ public class View extends JFrame implements ICalculatorInterface {
                 break;
             default:
                 break;
-        }
-    }
-
-    public class CustomButton extends JButton {
-
-        public CustomButton(String text) {
-            super(text);
-            // Setze zusätzliche Eigenschaften des Buttons hier, falls notwendig
-            this.setBackground(Color.WHITE); // Setze die Hintergrundfarbe auf Weiß
-            this.setForeground(Config.FOREGROUND); // Setze die Textfarbe auf Schwarz
-            this.setBorderPainted(false); // Deaktiviere die Randzeichnung
-            this.setFocusPainted(false); // Deaktiviere die Fokussierungsmarkierung
-        }
-
-        @Override
-        protected void paintComponent(Graphics g) {
-            Graphics2D g2d = (Graphics2D) g.create();
-            if (getModel().isPressed()) {
-                g.setColor(Config.BUTTON_COLOR_Pressed);
-            } else {
-                g.setColor(Config.BUTTON_COLOR);
-            }
-            g.fillRoundRect(5, 5, getWidth() - 10, getHeight() - 10, 20, 20);
-            super.paintComponent(g);
         }
     }
 }

@@ -2,10 +2,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Logic {
-    private double displayNum;
+    private float displayNum;
     private String disp;
-    private double number1;
-    private double number2;
+    private float number1;
+    private float number2;
     private int operator; // plus = 1, minus = 2, mulit = 3, divide = 4
     private final List<ICalculatorInterface> subscribers;
 
@@ -21,9 +21,9 @@ public class Logic {
     public void numberInput(int number) {
         disp += number;
         if (operator == 0) {
-            number1 = Double.parseDouble(disp);
+            number1 = Float.parseFloat(disp);
         } else {
-            number2 = Double.parseDouble(disp);
+            number2 = Float.parseFloat(disp);
         }
         publishDisplayChange(disp);
     }
@@ -47,7 +47,7 @@ public class Logic {
         } else {
             disp = disp.substring(0, disp.length() - 1);
         }
-        double numberToUpdate = disp.isEmpty() ? 0 : Double.parseDouble(disp);
+        float numberToUpdate = disp.isEmpty() ? 0 : Float.parseFloat(disp);
         if (operator == 0) {
             number1 = numberToUpdate;
         } else {
@@ -63,15 +63,18 @@ public class Logic {
     }
 
     public void result() {
+        float result = 0;
         switch (operator) {
-            case 1: disp = "" + (number1 + number2); break;
-            case 2: disp = "" + (number1 - number2); break;
-            case 3: disp = "" + (number1 * number2); break;
-            case 4: disp = "" + (number1 / number2); break;
+            case 1: result = number1 + number2; break;
+            case 2: result = number1 - number2; break;
+            case 3: result = number1 * number2; break;
+            case 4: result = number1 / number2; break;
         }
-        number1 = Double.parseDouble(disp);
+        number1 = Float.parseFloat(disp);
         number2 = 0;
-        publishDisplayChange(disp.replaceAll("0*$", "").replaceAll("\\.$", ""));
+        operator = 0;
+        disp = (result + "").replaceAll("0*$", "").replaceAll("\\.$", "");
+        publishDisplayChange(disp);
     }
 
     /**
