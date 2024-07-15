@@ -30,6 +30,7 @@ public class Logic {
 
     public void decimalP() {
         disp += ".";
+        publishDisplayChange(disp);
     }
 
     public void clear() {
