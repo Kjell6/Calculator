@@ -123,6 +123,7 @@ public class View extends JFrame implements ICalculatorInterface {
             @Override
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
+                logic.decimalP();
             }
         });
         equals.addMouseListener(new MouseAdapter() {
@@ -178,12 +179,9 @@ public class View extends JFrame implements ICalculatorInterface {
     }
 
     @Override
-    public void displayNumberChange(double number) {
-        if (number == (long) number) {
-            display.setText(String.format("%d", (long) number));
-        } else {
-            display.setText(String.format("%.5f", number).replaceAll("0*$", "").replaceAll("\\.$", ""));
-        }
+    public void displayNumberChange(String number) {
+        display.setText(number);
+        //display.setText(number.replaceAll("0*$", "").replaceAll("\\.$", ""));
     }
 
     @Override

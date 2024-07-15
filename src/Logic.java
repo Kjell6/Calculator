@@ -19,51 +19,53 @@ public class Logic {
     }
 
     public void numberInput(int number) {
-        displayNum = (displayNum * 10) + number;
         disp += number;
         if (operator == 0) {
-            number1 = displayNum;
+            number1 = Double.parseDouble(disp);
         } else {
-            number2 = displayNum;
+            number2 = Double.parseDouble(disp);
         }
-        publishDisplayChange(displayNum);
+        publishDisplayChange(disp);
+    }
+
+    public void decimalP() {
+        disp += ".";
     }
 
     public void clear() {
-        displayNum = 0;
         number1 = 0;
         number2 = 0;
         operator = 0;
-        publishDisplayChange(displayNum);
+        disp = "";
+        publishDisplayChange(disp);
     }
 
     public void delete() {
-        /*displayNum = displayNum / 10;
-        if (operator == 0) {
-            number1 = displayNum;
-        } else {
-            number2 = displayNum;
-        }*/
         disp = disp.substring(0, disp.length() - 1);
+        if (operator == 0) {
+            number1 = Double.parseDouble(disp);
+        } else {
+            number2 = Double.parseDouble(disp);
+        }
+        publishDisplayChange(disp);
     }
 
     public void setOperator(int op) {
         operator = op;
-        displayNum = 0;
+        disp = "";
         publishDisplayNull();
-
     }
 
     public void result() {
         switch (operator) {
-            case 1: displayNum = number1 + number2; break;
-            case 2: displayNum = number1 - number2; break;
-            case 3: displayNum = number1 * number2; break;
-            case 4: displayNum = number1 / number2; break;
+            case 1: disp = "" + (number1 + number2); break;
+            case 2: disp = "" + (number1 - number2); break;
+            case 3: disp = "" + (number1 * number2); break;
+            case 4: disp = "" + (number1 / number2); break;
         }
-        number1 = displayNum;
+        number1 = Double.parseDouble(disp);
         number2 = 0;
-        publishDisplayChange(displayNum);
+        publishDisplayChange(disp.replaceAll("0*$", "").replaceAll("\\.$", ""));
     }
 
     /**
@@ -84,7 +86,7 @@ public class Logic {
         subscribers.remove(listener);
     }
 
-    private void publishDisplayChange(double disp) {
+    private void publishDisplayChange(String disp) {
         for (ICalculatorInterface listener : subscribers) {
             listener.displayNumberChange(disp);
         }
@@ -95,5 +97,6 @@ public class Logic {
         for (ICalculatorInterface listener : subscribers) {
             listener.displayNull();
         }
+        System.out.println(this.disp);
     }
 }
