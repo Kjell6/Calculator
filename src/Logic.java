@@ -42,11 +42,16 @@ public class Logic {
     }
 
     public void delete() {
-        disp = disp.substring(0, disp.length() - 1);
-        if (operator == 0) {
-            number1 = Double.parseDouble(disp);
+        if (disp.length() == 1) {
+            disp = "";
         } else {
-            number2 = Double.parseDouble(disp);
+            disp = disp.substring(0, disp.length() - 1);
+        }
+        double numberToUpdate = disp.isEmpty() ? 0 : Double.parseDouble(disp);
+        if (operator == 0) {
+            number1 = numberToUpdate;
+        } else {
+            number2 = numberToUpdate;
         }
         publishDisplayChange(disp);
     }
@@ -91,13 +96,11 @@ public class Logic {
         for (ICalculatorInterface listener : subscribers) {
             listener.displayNumberChange(disp);
         }
-        System.out.println(this.disp);
     }
 
     private void publishDisplayNull() {
         for (ICalculatorInterface listener : subscribers) {
             listener.displayNull();
         }
-        System.out.println(this.disp);
     }
 }

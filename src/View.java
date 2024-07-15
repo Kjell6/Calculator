@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -25,6 +26,12 @@ public class View extends JFrame implements ICalculatorInterface {
     private JTextPane display;
     private JButton clear;
     private JButton delete;
+    private JPanel numberPanel;
+    private JPanel zeroDeciPanel;
+    private JPanel deletePanel;
+    private JPanel inputPanel;
+    private JPanel operatorPanel;
+    private JPanel buttonPanel;
 
     private final Logic logic;
 
@@ -33,15 +40,13 @@ public class View extends JFrame implements ICalculatorInterface {
         logic.subscribe(this);
         setContentPane(mainPanel);
         setTitle("Calculator");
-        setSize(400, 300);
+        setSize(330, 350);
         // exit application on close
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         // show window in the center of the screen
         setLocationRelativeTo(null);
         // window is not resizable
         setResizable(true);
-        setFocusable(true);
-
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -176,6 +181,7 @@ public class View extends JFrame implements ICalculatorInterface {
                 logic.delete();
             }
         });
+        setFocusable(true);
     }
 
     @Override
@@ -224,6 +230,30 @@ public class View extends JFrame implements ICalculatorInterface {
                 break;
             default:
                 break;
+        }
+    }
+
+    public class CustomButton extends JButton {
+
+        public CustomButton(String text) {
+            super(text);
+            // Setze zusätzliche Eigenschaften des Buttons hier, falls notwendig
+            this.setBackground(Color.WHITE); // Setze die Hintergrundfarbe auf Weiß
+            this.setForeground(Config.FOREGROUND); // Setze die Textfarbe auf Schwarz
+            this.setBorderPainted(false); // Deaktiviere die Randzeichnung
+            this.setFocusPainted(false); // Deaktiviere die Fokussierungsmarkierung
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            Graphics2D g2d = (Graphics2D) g.create();
+            if (getModel().isPressed()) {
+                g.setColor(Config.BUTTON_COLOR_Pressed);
+            } else {
+                g.setColor(Config.BUTTON_COLOR);
+            }
+            g.fillRoundRect(5, 5, getWidth() - 10, getHeight() - 10, 20, 20);
+            super.paintComponent(g);
         }
     }
 }
