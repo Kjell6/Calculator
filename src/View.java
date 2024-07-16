@@ -1,3 +1,4 @@
+import javax.sound.sampled.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicButtonUI;
@@ -6,6 +7,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.IOException;
 
 public class View extends JFrame implements ICalculatorInterface {
     private JPanel mainPanel;
@@ -68,6 +71,7 @@ public class View extends JFrame implements ICalculatorInterface {
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
                 logic.numberInput(1);
+                playSound(Config.NUMBER_SOUND);
             }
         });
         a2Button.setUI(buttonUI);
@@ -76,6 +80,7 @@ public class View extends JFrame implements ICalculatorInterface {
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
                 logic.numberInput(2);
+                playSound(Config.NUMBER_SOUND);
             }
         });
         a3Button.setUI(buttonUI);
@@ -84,6 +89,7 @@ public class View extends JFrame implements ICalculatorInterface {
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
                 logic.numberInput(3);
+                playSound(Config.NUMBER_SOUND);
             }
         });
         a4Button.setUI(buttonUI);
@@ -92,6 +98,7 @@ public class View extends JFrame implements ICalculatorInterface {
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
                 logic.numberInput(4);
+                playSound(Config.NUMBER_SOUND);
             }
         });
         a5Button.setUI(buttonUI);
@@ -100,6 +107,7 @@ public class View extends JFrame implements ICalculatorInterface {
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
                 logic.numberInput(5);
+                playSound(Config.NUMBER_SOUND);
             }
         });
         a6Button.setUI(buttonUI);
@@ -108,6 +116,7 @@ public class View extends JFrame implements ICalculatorInterface {
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
                 logic.numberInput(6);
+                playSound(Config.NUMBER_SOUND);
             }
         });
         a7Button.setUI(buttonUI);
@@ -116,6 +125,7 @@ public class View extends JFrame implements ICalculatorInterface {
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
                 logic.numberInput(7);
+                playSound(Config.NUMBER_SOUND);
             }
         });
         a8Button.setUI(buttonUI);
@@ -124,6 +134,7 @@ public class View extends JFrame implements ICalculatorInterface {
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
                 logic.numberInput(8);
+                playSound(Config.NUMBER_SOUND);
             }
         });
         a9Button.setUI(buttonUI);
@@ -132,6 +143,7 @@ public class View extends JFrame implements ICalculatorInterface {
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
                 logic.numberInput(9);
+                playSound(Config.NUMBER_SOUND);
             }
         });
         a0Button.setUI(buttonUI);
@@ -140,6 +152,7 @@ public class View extends JFrame implements ICalculatorInterface {
             public void mousePressed(MouseEvent e) {
             super.mousePressed(e);
                 logic.numberInput(0);
+                playSound(Config.NUMBER_SOUND);
             }
         });
         buttonComma.setUI(buttonUI);
@@ -148,6 +161,7 @@ public class View extends JFrame implements ICalculatorInterface {
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
                 logic.decimalP();
+                playSound(Config.NUMBER_SOUND);
             }
         });
         equals.setUI(buttonUI);
@@ -156,6 +170,7 @@ public class View extends JFrame implements ICalculatorInterface {
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
                 logic.result();
+                playSound(Config.EQUAL_SOUND);
             }
         });
         plus.setUI(buttonUI);
@@ -164,6 +179,7 @@ public class View extends JFrame implements ICalculatorInterface {
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
                 logic.setOperator(1);
+                playSound(Config.OPERATOR_SOUND);
             }
         });
         minus.setUI(buttonUI);
@@ -172,6 +188,7 @@ public class View extends JFrame implements ICalculatorInterface {
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
                 logic.setOperator(2);
+                playSound(Config.OPERATOR_SOUND);
             }
         });
         multi.setUI(buttonUI);
@@ -180,6 +197,7 @@ public class View extends JFrame implements ICalculatorInterface {
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
                 logic.setOperator(3);
+                playSound(Config.OPERATOR_SOUND);
             }
         });
         divide.setUI(buttonUI);
@@ -188,6 +206,7 @@ public class View extends JFrame implements ICalculatorInterface {
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
                 logic.setOperator(4);
+                playSound(Config.OPERATOR_SOUND);
             }
         });
         clear.setUI(buttonUI);
@@ -196,6 +215,7 @@ public class View extends JFrame implements ICalculatorInterface {
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
                 logic.clear();
+                playSound(Config.DELETE_SOUND);
             }
         });
         delete.setUI(buttonUI);
@@ -204,6 +224,7 @@ public class View extends JFrame implements ICalculatorInterface {
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
                 logic.delete();
+                playSound(Config.DELETE_SOUND);
             }
         });
         negPos.setUI(buttonUI);
@@ -212,6 +233,7 @@ public class View extends JFrame implements ICalculatorInterface {
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
                 logic.plusMinus();
+                playSound(Config.OPERATOR_SOUND);
             }
         });
         setVisible(true);
@@ -291,6 +313,23 @@ public class View extends JFrame implements ICalculatorInterface {
                 break;
             default:
                 break;
+        }
+    }
+
+    private static void playSound(String path) {
+        try {
+            File audioFile = new File(path);
+            if (!audioFile.exists()) {
+                System.err.println("Audio file not found: " + path);
+                return;
+            }
+
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioStream);
+            clip.start();
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
+            ex.printStackTrace();
         }
     }
 }
