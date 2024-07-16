@@ -1,5 +1,7 @@
 package view;
 
+import config.Config;
+import model.ICalculatorInterface;
 import model.Logic;
 
 import javax.sound.sampled.*;

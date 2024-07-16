@@ -1,5 +1,7 @@
 package view;
 
+import config.Config;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicButtonUI;
