@@ -1,12 +1,13 @@
+package view;
+
+import model.Logic;
+
 import javax.sound.sampled.*;
 import javax.swing.*;
-import javax.swing.text.*;
 import java.awt.*;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
