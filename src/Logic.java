@@ -2,8 +2,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Logic {
-    private float displayNum;
-    private String disp;
+    private String displayNum;
     private float number1;
     private float number2;
     private int operator; // plus = 1, minus = 2, mulit = 3, divide = 4
@@ -11,54 +10,63 @@ public class Logic {
 
     public Logic() {
         this.subscribers = new LinkedList<>();
-        this.displayNum = 0;
         this.operator = 0;
         number1 = 0;
         number2 = 0;
-        disp = "";
+        displayNum = "";
     }
 
     public void numberInput(int number) {
-        disp += number;
+        displayNum += number;
         if (operator == 0) {
-            number1 = Float.parseFloat(disp);
+            number1 = Float.parseFloat(displayNum);
         } else {
-            number2 = Float.parseFloat(disp);
+            number2 = Float.parseFloat(displayNum);
         }
-        publishDisplayChange(disp);
+        publishDisplayChange(displayNum);
     }
 
     public void decimalP() {
-        disp += ".";
-        publishDisplayChange(disp);
+        displayNum += ".";
+        publishDisplayChange(displayNum);
     }
 
     public void clear() {
         number1 = 0;
         number2 = 0;
         operator = 0;
-        disp = "";
-        publishDisplayChange(disp);
+        displayNum = "";
+        publishDisplayChange(displayNum);
     }
 
     public void delete() {
-        if (disp.length() == 1) {
-            disp = "";
+        if (displayNum.length() == 1) {
+            displayNum = "";
         } else {
-            disp = disp.substring(0, disp.length() - 1);
+            displayNum = displayNum.substring(0, displayNum.length() - 1);
         }
-        float numberToUpdate = disp.isEmpty() ? 0 : Float.parseFloat(disp);
+        float numberToUpdate = displayNum.isEmpty() ? 0 : Float.parseFloat(displayNum);
         if (operator == 0) {
             number1 = numberToUpdate;
         } else {
             number2 = numberToUpdate;
         }
-        publishDisplayChange(disp);
+        publishDisplayChange(displayNum);
+    }
+
+    public void plusMinus() {
+        displayNum = (displayNum.charAt(0) == '-') ? displayNum.substring(1) : "-" + displayNum;
+        if (operator == 0) {
+            number1 = Float.parseFloat(displayNum);
+        } else {
+            number2 = Float.parseFloat(displayNum);
+        }
+        publishDisplayChange(displayNum);
     }
 
     public void setOperator(int op) {
         operator = op;
-        disp = "";
+        displayNum = "";
         publishDisplayNull();
     }
 
@@ -70,11 +78,11 @@ public class Logic {
             case 3: result = number1 * number2; break;
             case 4: result = number1 / number2; break;
         }
-        number1 = Float.parseFloat(disp);
+        displayNum = (result + "").replaceAll("0*$", "").replaceAll("\\.$", "");
+        number1 = Float.parseFloat(displayNum);
         number2 = 0;
         operator = 0;
-        disp = (result + "").replaceAll("0*$", "").replaceAll("\\.$", "");
-        publishDisplayChange(disp);
+        publishDisplayChange(displayNum);
     }
 
     /**
