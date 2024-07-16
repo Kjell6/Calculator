@@ -27,8 +27,10 @@ public class Logic {
     }
 
     public void decimalP() {
-        displayNum += ".";
-        publishDisplayChange(displayNum);
+        if (!displayNum.contains(".")) {
+            displayNum += ".";
+            publishDisplayChange(displayNum);
+        }
     }
 
     public void clear() {
@@ -40,7 +42,7 @@ public class Logic {
     }
 
     public void delete() {
-        if (displayNum.length() == 1) {
+        if (displayNum.length() == 1 || displayNum.length() == 0) {
             displayNum = "";
         } else {
             displayNum = displayNum.substring(0, displayNum.length() - 1);
@@ -55,13 +57,15 @@ public class Logic {
     }
 
     public void plusMinus() {
-        displayNum = (displayNum.charAt(0) == '-') ? displayNum.substring(1) : "-" + displayNum;
-        if (operator == 0) {
-            number1 = Float.parseFloat(displayNum);
-        } else {
-            number2 = Float.parseFloat(displayNum);
+        if (!displayNum.isEmpty()) {
+            displayNum = (displayNum.charAt(0) == '-') ? displayNum.substring(1) : "-" + displayNum;
+            if (operator == 0) {
+                number1 = Float.parseFloat(displayNum);
+            } else {
+                number2 = Float.parseFloat(displayNum);
+            }
+            publishDisplayChange(displayNum);
         }
-        publishDisplayChange(displayNum);
     }
 
     public void setOperator(int op) {
