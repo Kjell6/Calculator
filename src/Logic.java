@@ -13,7 +13,7 @@ public class Logic {
         this.operator = 0;
         number1 = 0;
         number2 = 0;
-        displayNum = "0";
+        displayNum = "";
     }
 
     public void numberInput(int number) {
@@ -27,6 +27,7 @@ public class Logic {
     }
 
     public void decimalP() {
+        if (displayNum.isEmpty()) displayNum = "0";
         if (!displayNum.contains(".")) {
             displayNum += ".";
             publishDisplayChange(displayNum);

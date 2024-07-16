@@ -287,6 +287,7 @@ public class View extends JFrame implements ICalculatorInterface {
     @Override
     public void displayNumberChange(String number) {
         display.setText(number);
+        if (number.isEmpty()) display.setText("0");
     }
 
     @Override
