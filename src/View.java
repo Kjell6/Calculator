@@ -1,8 +1,10 @@
 import javax.sound.sampled.*;
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.plaf.basic.BasicButtonUI;
+import javax.swing.text.*;
 import java.awt.*;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -31,39 +33,80 @@ public class View extends JFrame implements ICalculatorInterface {
     private JTextPane display;
     private JButton clear;
     private JButton delete;
-    private JPanel numberPanel;
-    private JPanel zeroDeciPanel;
-    private JPanel inputPanel;
-    private JPanel operatorPanel;
-    private JPanel buttonPanel;
     private JButton negPos;
     private final Logic logic;
 
     public View(Logic l) {
         this.logic = l;
         logic.subscribe(this);
+
+        initializeComponents();
+
+        // Main panel with BorderLayout
+        mainPanel = new JPanel(new BorderLayout());
+
+        // Display at the top
+        display = new JTextPane();
+        display.setEditable(false);
+        display.setBackground(Config.BACKGROUND);
+        display.setForeground(Color.WHITE);
+        display.setFont(new Font("Arial", Font.PLAIN, 52)); // Increase font size
+        display.setPreferredSize(new Dimension(300, 60)); // Set preferred size
+        display.setText("0"); // Set initial text
+        mainPanel.add(display,BorderLayout.NORTH);
+        // Text-Alignment
+        StyledDocument doc = display.getStyledDocument();
+        SimpleAttributeSet rightAlign = new SimpleAttributeSet();
+        StyleConstants.setAlignment(rightAlign, StyleConstants.ALIGN_RIGHT);
+        doc.setParagraphAttributes(0, doc.getLength(), rightAlign, false);
+        // Button panel with GridBagLayout
+        JPanel buttonPanel = new JPanel(new GridBagLayout());
+        buttonPanel.setBackground(Config.BACKGROUND);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weightx = 1;
+        gbc.weighty = 1;
+
+        // Add buttons to the grid
+        addButton(buttonPanel, clear, 0, 0, gbc);
+        addButton(buttonPanel, negPos, 1, 0, gbc);
+        addButton(buttonPanel, delete, 2, 0, gbc);
+        addButton(buttonPanel, divide, 3, 0, gbc);
+
+        addButton(buttonPanel, a7Button, 0, 1, gbc);
+        addButton(buttonPanel, a8Button, 1, 1, gbc);
+        addButton(buttonPanel, a9Button, 2, 1, gbc);
+        addButton(buttonPanel, multi, 3, 1, gbc);
+
+        addButton(buttonPanel, a4Button, 0, 2, gbc);
+        addButton(buttonPanel, a5Button, 1, 2, gbc);
+        addButton(buttonPanel, a6Button, 2, 2, gbc);
+        addButton(buttonPanel, minus, 3, 2, gbc);
+
+        addButton(buttonPanel, a1Button, 0, 3, gbc);
+        addButton(buttonPanel, a2Button, 1, 3, gbc);
+        addButton(buttonPanel, a3Button, 2, 3, gbc);
+        addButton(buttonPanel, plus, 3, 3, gbc);
+
+        // Make "0" button span two columns
+        gbc.gridwidth = 2;
+        addButton(buttonPanel, a0Button, 0, 4, gbc);
+        gbc.gridwidth = 1;
+        addButton(buttonPanel, buttonComma, 2, 4, gbc);
+        addButton(buttonPanel, equals, 3, 4, gbc);
+
+        //Frame Properties
+        mainPanel.add(buttonPanel, BorderLayout.CENTER);
+        add(mainPanel);
         setContentPane(mainPanel);
         setTitle("Calculator");
         setSize(300, 400);
-        // exit application on close
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        // show window in the center of the screen
         setLocationRelativeTo(null);
-        // window is not resizable
         setResizable(true);
         getContentPane().setBackground(Config.BACKGROUND);
-        inputPanel.setBackground(Config.BACKGROUND);
-        buttonPanel.setBackground(Config.BACKGROUND);
-        numberPanel.setBackground(Config.BACKGROUND);
-        zeroDeciPanel.setBackground(Config.BACKGROUND);
-        operatorPanel.setBackground(Config.BACKGROUND);
-        display.setForeground(Color.WHITE);
-        addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                pressButton(e.getKeyCode());
-            }
-        });
+
+        //adding Button Lisener and UI
         CustomButtonUI buttonUI = new CustomButtonUI();
         a1Button.setUI(buttonUI);
         a1Button.addMouseListener(new MouseAdapter() {
@@ -150,7 +193,7 @@ public class View extends JFrame implements ICalculatorInterface {
         a0Button.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-            super.mousePressed(e);
+                super.mousePressed(e);
                 logic.numberInput(0);
                 playSound(Config.NUMBER_SOUND);
             }
@@ -164,7 +207,7 @@ public class View extends JFrame implements ICalculatorInterface {
                 playSound(Config.NUMBER_SOUND);
             }
         });
-        equals.setUI(buttonUI);
+        equals.setUI(new CustomButtonUI(Config.EQUAL_COLOR));
         equals.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -173,7 +216,8 @@ public class View extends JFrame implements ICalculatorInterface {
                 playSound(Config.EQUAL_SOUND);
             }
         });
-        plus.setUI(buttonUI);
+        CustomButtonUI operatorButtons = new CustomButtonUI(Config.OPERATOR_COLOR);
+        plus.setUI(operatorButtons);
         plus.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -182,7 +226,7 @@ public class View extends JFrame implements ICalculatorInterface {
                 playSound(Config.OPERATOR_SOUND);
             }
         });
-        minus.setUI(buttonUI);
+        minus.setUI(operatorButtons);
         minus.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -191,7 +235,7 @@ public class View extends JFrame implements ICalculatorInterface {
                 playSound(Config.OPERATOR_SOUND);
             }
         });
-        multi.setUI(buttonUI);
+        multi.setUI(operatorButtons);
         multi.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -200,7 +244,7 @@ public class View extends JFrame implements ICalculatorInterface {
                 playSound(Config.OPERATOR_SOUND);
             }
         });
-        divide.setUI(buttonUI);
+        divide.setUI(operatorButtons);
         divide.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -209,7 +253,7 @@ public class View extends JFrame implements ICalculatorInterface {
                 playSound(Config.OPERATOR_SOUND);
             }
         });
-        clear.setUI(buttonUI);
+        clear.setUI(operatorButtons);
         clear.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -218,7 +262,7 @@ public class View extends JFrame implements ICalculatorInterface {
                 playSound(Config.DELETE_SOUND);
             }
         });
-        delete.setUI(buttonUI);
+        delete.setUI(operatorButtons);
         delete.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -227,7 +271,7 @@ public class View extends JFrame implements ICalculatorInterface {
                 playSound(Config.DELETE_SOUND);
             }
         });
-        negPos.setUI(buttonUI);
+        negPos.setUI(operatorButtons);
         negPos.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -250,72 +294,6 @@ public class View extends JFrame implements ICalculatorInterface {
         display.setText("");
     }
 
-    class CustomButtonUI extends BasicButtonUI {
-        @Override
-        public void installUI (JComponent c) {
-            super.installUI(c);
-            AbstractButton button = (AbstractButton) c;
-            button.setOpaque(false);
-            button.setBorder(new EmptyBorder(5, 15, 5, 15));
-            button.setForeground(Color.WHITE); // Setzt die Textfarbe auf Weiß
-        }
-
-        @Override
-        public void paint (Graphics g, JComponent c) {
-            AbstractButton b = (AbstractButton) c;
-            paintBackground(g, b, b.getModel().isPressed() ? 2 : 0);
-            super.paint(g, c);
-        }
-
-        private void paintBackground (Graphics g, JComponent c, int yOffset) {
-            Dimension size = c.getSize();
-            Graphics2D g2 = (Graphics2D) g;
-            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g.setColor(Config.BUTTON_COLOR.darker());
-            g.fillRoundRect(0, yOffset, size.width - 3, size.height - yOffset - 3, 10, 10);
-            g.setColor(Config.BUTTON_COLOR);
-            g.fillRoundRect(0, yOffset, size.width - 3, size.height + yOffset - 5 - 3, 10, 10);
-        }
-    }
-
-
-    private void pressButton(int keyCode) {
-        switch (keyCode) {
-            case 48:
-                logic.numberInput(0);
-                break;
-            case 49:
-                logic.numberInput(1);
-                break;
-            case 50:
-                logic.numberInput(2);
-                break;
-            case 51:
-                logic.numberInput(3);
-                break;
-            case 52:
-                logic.numberInput(4);
-                break;
-            case 53:
-                logic.numberInput(5);
-                break;
-            case 54:
-                logic.numberInput(6);
-                break;
-            case 55:
-                logic.numberInput(7);
-                break;
-            case 56:
-                logic.numberInput(8);
-                break;
-            case 57:
-                logic.numberInput(9);
-                break;
-            default:
-                break;
-        }
-    }
-
     private static void playSound(String path) {
         try {
             File audioFile = new File(path);
@@ -331,5 +309,32 @@ public class View extends JFrame implements ICalculatorInterface {
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
             ex.printStackTrace();
         }
+    }
+    private void initializeComponents() {
+        clear = new JButton("AC");
+        negPos = new JButton("±");
+        delete = new JButton("⌫");
+        divide = new JButton("÷");
+        a7Button = new JButton("7");
+        a8Button = new JButton("8");
+        a9Button = new JButton("9");
+        multi = new JButton("×");
+         a4Button = new JButton("4");
+        a5Button = new JButton("5");
+        a6Button = new JButton("6");
+        minus = new JButton("-");
+        a1Button = new JButton("1");
+        a2Button = new JButton("2");
+        a3Button = new JButton("3");
+        plus = new JButton("+");
+        a0Button = new JButton("0");
+        buttonComma = new JButton(".");
+        equals = new JButton("=");
+    }
+
+    private void addButton(JPanel panel, JButton button, int x, int y, GridBagConstraints gbc) {
+        gbc.gridx = x;
+        gbc.gridy = y;
+        panel.add(button, gbc);
     }
 }

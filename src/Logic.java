@@ -13,7 +13,7 @@ public class Logic {
         this.operator = 0;
         number1 = 0;
         number2 = 0;
-        displayNum = "";
+        displayNum = "0";
     }
 
     public void numberInput(int number) {
