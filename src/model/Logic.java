@@ -7,12 +7,13 @@ public class Logic {
     private String displayNum;
     private float number1;
     private float number2;
-    private int operator; // plus = 1, minus = 2, mulit = 3, divide = 4
+    Operator operator;
     private final List<ICalculatorInterface> subscribers;
 
     public Logic() {
         this.subscribers = new LinkedList<>();
-        this.operator = 0;
+        //this.operator = 0;
+        operator = Operator.NONE;
         number1 = 0;
         number2 = 0;
         displayNum = "";
@@ -20,12 +21,22 @@ public class Logic {
 
     public void numberInput(int number) {
         displayNum += number;
-        if (operator == 0) {
+        if (operator == Operator.NONE) {
             number1 = Float.parseFloat(displayNum);
         } else {
             number2 = Float.parseFloat(displayNum);
         }
         publishDisplayChange(displayNum);
+    }
+
+    public void setOperator(Operator op) {
+        operator = op;
+        displayNum = "";
+        if (isMonoOperato(op)) {
+            result();
+        } else {
+            publishDisplayNull();
+        }
     }
 
     public void decimalP() {
@@ -39,7 +50,7 @@ public class Logic {
     public void clear() {
         number1 = 0;
         number2 = 0;
-        operator = 0;
+        operator = Operator.NONE;
         displayNum = "";
         publishDisplayChange(displayNum);
     }
@@ -51,7 +62,7 @@ public class Logic {
             displayNum = displayNum.substring(0, displayNum.length() - 1);
         }
         float numberToUpdate = displayNum.isEmpty() ? 0 : Float.parseFloat(displayNum);
-        if (operator == 0) {
+        if (operator == Operator.NONE) {
             number1 = numberToUpdate;
         } else {
             number2 = numberToUpdate;
@@ -62,7 +73,7 @@ public class Logic {
     public void plusMinus() {
         if (!displayNum.isEmpty()) {
             displayNum = (displayNum.charAt(0) == '-') ? displayNum.substring(1) : "-" + displayNum;
-            if (operator == 0) {
+            if (operator == Operator.NONE) {
                 number1 = Float.parseFloat(displayNum);
             } else {
                 number2 = Float.parseFloat(displayNum);
@@ -71,25 +82,39 @@ public class Logic {
         }
     }
 
-    public void setOperator(int op) {
-        operator = op;
-        displayNum = "";
-        publishDisplayNull();
-    }
-
     public void result() {
         float result = 0;
         switch (operator) {
-            case 1: result = number1 + number2; break;
-            case 2: result = number1 - number2; break;
-            case 3: result = number1 * number2; break;
-            case 4: result = number1 / number2; break;
+            case Operator.PLUS: result = number1 + number2; break;
+            case Operator.MINUS: result = number1 - number2; break;
+            case Operator.MULTI: result = number1 * number2; break;
+            case Operator.DIVIDE: result = number1 / number2; break;
+            case Operator.NONE: result = number1; break;
+            case Operator.POWER: result = (float) Math.pow(number1, number2); break;
+            case Operator.SQRT: result = (float) Math.sqrt(number1); break;
+            case Operator.SIN: result = (float) Math.sin(Math.toRadians(number1)); break;
+            case Operator.COS: result = (float) Math.cos(Math.toRadians(number1)); break;
+            case Operator.TAN: result = (float) Math.tan(Math.toRadians(number1)); break;
+            case Operator.FACULTY: result = faculty((int) number1); break;
         }
         displayNum = (result + "").replaceAll("0*$", "").replaceAll("\\.$", "");
         number1 = Float.parseFloat(displayNum);
         number2 = 0;
-        operator = 0;
+        operator = Operator.NONE;
         publishDisplayChange(displayNum);
+    }
+
+    private boolean isMonoOperato(Operator op) {
+        return op == Operator.SQRT || op == Operator.SIN || op == Operator.COS
+                || op == Operator.TAN || op == Operator.FACULTY;
+    }
+
+    private float faculty(int n) {
+        float result = 1;
+        for (int i = 1; i <= n; i++) {
+            result *= i;
+        }
+        return result;
     }
 
     /**
