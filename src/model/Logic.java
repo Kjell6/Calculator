@@ -12,7 +12,6 @@ public class Logic {
 
     public Logic() {
         this.subscribers = new LinkedList<>();
-        //this.operator = 0;
         operator = Operator.NONE;
         number1 = 0;
         number2 = 0;
@@ -26,7 +25,7 @@ public class Logic {
         } else {
             number2 = Float.parseFloat(displayNum);
         }
-        publishDisplayChange(displayNum);
+         publishDisplayChange(displayNum);
     }
 
     public void setOperator(Operator op) {
@@ -102,12 +101,14 @@ public class Logic {
         }
         displayNum = (result + "").replaceAll("0*$", "").replaceAll("\\.$", "");
         if (displayNum.contains("Infinity")) {
-            displayNum = "0";
-            publishDisplayChange("Keine Zahl");
+            displayNum = "";
+            number1 = 0;
+            publishDisplayChange("Nicht möglich");
         } else {
             publishDisplayChange(displayNum);
+            number1 = Float.parseFloat(displayNum);
         }
-        number1 = Float.parseFloat(displayNum);
+        if (displayNum.equals("0")) displayNum = "";
         number2 = 0;
         operator = Operator.NONE;
     }
