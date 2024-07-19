@@ -153,105 +153,34 @@ public class View extends JFrame implements ICalculatorInterface {
             soundSwitch.setText(soundSwitchText);
         });
 
-        a1Button.setUI(buttonUI);
-        a1Button.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                super.mousePressed(e);
-                logic.numberInput(1);
-                playSound(Config.NUMBER_SOUND);
-            }
-        });
-        a2Button.setUI(buttonUI);
-        a2Button.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                super.mousePressed(e);
-                logic.numberInput(2);
-                playSound(Config.NUMBER_SOUND);
-            }
-        });
-        a3Button.setUI(buttonUI);
-        a3Button.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                super.mousePressed(e);
-                logic.numberInput(3);
-                playSound(Config.NUMBER_SOUND);
-            }
-        });
-        a4Button.setUI(buttonUI);
-        a4Button.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                super.mousePressed(e);
-                logic.numberInput(4);
-                playSound(Config.NUMBER_SOUND);
-            }
-        });
-        a5Button.setUI(buttonUI);
-        a5Button.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                super.mousePressed(e);
-                logic.numberInput(5);
-                playSound(Config.NUMBER_SOUND);
-            }
-        });
-        a6Button.setUI(buttonUI);
-        a6Button.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                super.mousePressed(e);
-                logic.numberInput(6);
-                playSound(Config.NUMBER_SOUND);
-            }
-        });
-        a7Button.setUI(buttonUI);
-        a7Button.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                super.mousePressed(e);
-                logic.numberInput(7);
-                playSound(Config.NUMBER_SOUND);
-            }
-        });
-        a8Button.setUI(buttonUI);
-        a8Button.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                super.mousePressed(e);
-                logic.numberInput(8);
-                playSound(Config.NUMBER_SOUND);
-            }
-        });
-        a9Button.setUI(buttonUI);
-        a9Button.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                super.mousePressed(e);
-                logic.numberInput(9);
-                playSound(Config.NUMBER_SOUND);
-            }
-        });
-        a0Button.setUI(buttonUI);
-        a0Button.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                super.mousePressed(e);
-                logic.numberInput(0);
-                playSound(Config.NUMBER_SOUND);
-            }
-        });
-        buttonComma.setUI(buttonUI);
-        buttonComma.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                super.mousePressed(e);
-                logic.decimalP();
-                playSound(Config.NUMBER_SOUND);
-            }
-        });
+        //Adds Listeners to the number Buttons
+        addNumberListener(a1Button, 1, buttonUI);
+        addNumberListener(a2Button, 2, buttonUI);
+        addNumberListener(a3Button, 3, buttonUI);
+        addNumberListener(a4Button, 4, buttonUI);
+        addNumberListener(a5Button, 5, buttonUI);
+        addNumberListener(a6Button, 6, buttonUI);
+        addNumberListener(a7Button, 7, buttonUI);
+        addNumberListener(a8Button, 8, buttonUI);
+        addNumberListener(a9Button, 9, buttonUI);
+        addNumberListener(a0Button, 0, buttonUI);
+
+        //Adds Listeners to the Operator Buttons
+        CustomButtonUI operatorButtons = new CustomButtonUI(Config.OPERATOR_COLOR);
+        addOperatorListener(plus, Operator.PLUS, operatorButtons);
+        addOperatorListener(minus, Operator.MINUS, operatorButtons);
+        addOperatorListener(multi, Operator.MULTI, operatorButtons);
+        addOperatorListener(divide, Operator.DIVIDE, operatorButtons);
+        addOperatorListener(power, Operator.POWER, operatorButtons);
+        addOperatorListener(sqrt, Operator.SQRT, operatorButtons);
+        addOperatorListener(faculty, Operator.FACULTY, operatorButtons);
+        addOperatorListener(sin, Operator.SIN, operatorButtons);
+        addOperatorListener(cos, Operator.COS, operatorButtons);
+        addOperatorListener(tan, Operator.TAN, operatorButtons);
+        addOperatorListener(reciprocal, Operator.RECOPROCAL, operatorButtons);
+        addOperatorListener(logarithm, Operator.LOGARITHM, operatorButtons);
+        addOperatorListener(modulo, Operator.MODULO, operatorButtons);
+
         equals.setUI(new CustomButtonUI(Config.EQUAL_COLOR));
         equals.addMouseListener(new MouseAdapter() {
             @Override
@@ -261,122 +190,13 @@ public class View extends JFrame implements ICalculatorInterface {
                 playSound(Config.EQUAL_SOUND);
             }
         });
-        CustomButtonUI operatorButtons = new CustomButtonUI(Config.OPERATOR_COLOR);
-        plus.setUI(operatorButtons);
-        plus.addMouseListener(new MouseAdapter() {
+        buttonComma.setUI(buttonUI);
+        buttonComma.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
-                logic.setOperator(Operator.PLUS);
-                playSound(Config.OPERATOR_SOUND);
-            }
-        });
-        minus.setUI(operatorButtons);
-        minus.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                super.mousePressed(e);
-                logic.setOperator(Operator.MINUS);
-                playSound(Config.OPERATOR_SOUND);
-            }
-        });
-        multi.setUI(operatorButtons);
-        multi.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                super.mousePressed(e);
-                logic.setOperator(Operator.MULTI);
-                playSound(Config.OPERATOR_SOUND);
-            }
-        });
-        divide.setUI(operatorButtons);
-        divide.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                super.mousePressed(e);
-                logic.setOperator(Operator.DIVIDE);
-                playSound(Config.OPERATOR_SOUND);
-            }
-        });
-        power.setUI(operatorButtons);
-        power.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                super.mousePressed(e);
-                logic.setOperator(Operator.POWER);
-                playSound(Config.OPERATOR_SOUND);
-            }
-        });
-        sqrt.setUI(operatorButtons);
-        sqrt.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                super.mousePressed(e);
-                logic.setOperator(Operator.SQRT);
-                playSound(Config.OPERATOR_SOUND);
-            }
-        });
-        faculty.setUI(operatorButtons);
-        faculty.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                super.mousePressed(e);
-                logic.setOperator(Operator.FACULTY);
-                playSound(Config.OPERATOR_SOUND);
-            }
-        });
-        sin.setUI(operatorButtons);
-        sin.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                super.mousePressed(e);
-                logic.setOperator(Operator.SIN);
-                playSound(Config.OPERATOR_SOUND);
-            }
-        });
-        cos.setUI(operatorButtons);
-        cos.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                super.mousePressed(e);
-                logic.setOperator(Operator.COS);
-                playSound(Config.OPERATOR_SOUND);
-            }
-        });
-        tan.setUI(operatorButtons);
-        tan.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                super.mousePressed(e);
-                logic.setOperator(Operator.TAN);
-                playSound(Config.OPERATOR_SOUND);
-            }
-        });
-        reciprocal.setUI(operatorButtons);
-        reciprocal.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                super.mousePressed(e);
-                logic.setOperator(Operator.RECOPROCAL);
-                playSound(Config.OPERATOR_SOUND);
-            }
-        });
-        logarithm.setUI(operatorButtons);
-        logarithm.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                super.mousePressed(e);
-                logic.setOperator(Operator.LOGARITHM);
-                playSound(Config.OPERATOR_SOUND);
-            }
-        });
-        modulo.setUI(operatorButtons);
-        modulo.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                super.mousePressed(e);
-                logic.setOperator(Operator.MODULO);
-                playSound(Config.OPERATOR_SOUND);
+                logic.decimalP();
+                playSound(Config.NUMBER_SOUND);
             }
         });
         clear.setUI(operatorButtons);
@@ -439,6 +259,30 @@ public class View extends JFrame implements ICalculatorInterface {
                 ex.printStackTrace();
             }
         }
+    }
+
+    private void addNumberListener(JButton button, int number, CustomButtonUI buttonUI) {
+        button.setUI(buttonUI);
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                super.mousePressed(e);
+                logic.numberInput(number);
+                playSound(Config.NUMBER_SOUND);
+            }
+        });
+    }
+
+    private void addOperatorListener(JButton button, Operator op, CustomButtonUI operatorButtons) {
+        button.setUI(operatorButtons);
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                super.mousePressed(e);
+                logic.setOperator(op);
+                playSound(Config.OPERATOR_SOUND);
+            }
+        });
     }
 
     private void updateAdvancedButtonsVisibility() {
