@@ -45,9 +45,11 @@ public class View extends JFrame implements ICalculatorInterface {
     private JButton delete;
     private JButton negPos;
     private JToggleButton advancedModeSwitch;
+    private JToggleButton soundSwitch;
 
     private final Logic logic;
     private boolean advancedModeEnabled = false;
+    private boolean soundOn = false;
 
     public View(Logic l) {
         this.logic = l;
@@ -81,62 +83,71 @@ public class View extends JFrame implements ICalculatorInterface {
         gbc.weightx = 1;
         gbc.weighty = 1;
 
-        // Add buttons to the grid
-        JPanel advancePanel = new JPanel(new GridBagLayout());
-        advancePanel.add(advancedModeSwitch);
-
+        mainPanel.add(advancedModeSwitch, BorderLayout.SOUTH);
         addButton(buttonPanel, power, 0, 0, gbc);
-        addButton(buttonPanel, sin, 1, 0, gbc);
+        addButton(buttonPanel, soundSwitch, 1, 0, gbc);
+        //addButton(buttonPanel, advancedModeSwitch, 1, 0, gbc);
         addButton(buttonPanel, clear, 2, 0, gbc);
         addButton(buttonPanel, negPos, 3, 0, gbc);
         addButton(buttonPanel, delete, 4, 0, gbc);
         addButton(buttonPanel, divide, 5, 0, gbc);
 
         addButton(buttonPanel, sqrt, 0, 1, gbc);
-        addButton(buttonPanel, cos, 1, 1, gbc);
+        addButton(buttonPanel, sin, 1, 1, gbc);
         addButton(buttonPanel, a7Button, 2, 1, gbc);
         addButton(buttonPanel, a8Button, 3, 1, gbc);
         addButton(buttonPanel, a9Button, 4, 1, gbc);
         addButton(buttonPanel, multi, 5, 1, gbc);
 
         addButton(buttonPanel, faculty, 0, 2, gbc);
-        addButton(buttonPanel, tan, 1, 2, gbc);
+        addButton(buttonPanel, cos, 1, 2, gbc);
         addButton(buttonPanel, a4Button, 2, 2, gbc);
         addButton(buttonPanel, a5Button, 3, 2, gbc);
         addButton(buttonPanel, a6Button, 4, 2, gbc);
         addButton(buttonPanel, minus, 5,2, gbc);
 
+        addButton(buttonPanel, tan, 1, 3, gbc);
         addButton(buttonPanel, a1Button, 2, 3, gbc);
         addButton(buttonPanel, a2Button, 3, 3, gbc);
         addButton(buttonPanel, a3Button, 4, 3, gbc);
         addButton(buttonPanel, plus, 5, 3, gbc);
 
         // Make "0" button span two columns
-        gbc.gridwidth = 2;
-        addButton(buttonPanel, a0Button, 2, 4, gbc);
-        gbc.gridwidth = 1;
+        //gbc.gridwidth = 2;
+        addButton(buttonPanel, advancedModeSwitch, 2, 4, gbc);
+        addButton(buttonPanel, a0Button, 3, 4, gbc);
+        //gbc.gridwidth = 1;
         addButton(buttonPanel, buttonComma, 4, 4, gbc);
         addButton(buttonPanel, equals, 5, 4, gbc);
 
         //Frame Properties
         mainPanel.add(buttonPanel, BorderLayout.CENTER);
-        mainPanel.add(advancePanel, BorderLayout.SOUTH);
         add(mainPanel);
         setContentPane(mainPanel);
         setTitle("Calculator");
-        setSize(300, 400);
+        setSize(450, 400); //height will be: (height / 6) * 4
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(true);
         getContentPane().setBackground(Config.BACKGROUND);
 
         //adding Button Lisener and UI
+        CustomButtonUI buttonUI = new CustomButtonUI();
+
+        advancedModeSwitch.setUI(buttonUI);
         advancedModeSwitch.addActionListener(e -> {
+            playSound(Config.OPERATOR_SOUND);
             advancedModeEnabled = advancedModeSwitch.isSelected();
             updateAdvancedButtonsVisibility();
         });
+        soundSwitch.setUI(buttonUI);
+        soundSwitch.addActionListener(e -> {
+            playSound(Config.OPERATOR_SOUND);
+            soundOn = soundSwitch.isSelected();
+            String soundSwitchText = soundOn ? "\uD83D\uDD09" : "\uD83D\uDD07";
+            soundSwitch.setText(soundSwitchText);
+        });
 
-        CustomButtonUI buttonUI = new CustomButtonUI();
         a1Button.setUI(buttonUI);
         a1Button.addMouseListener(new MouseAdapter() {
             @Override
@@ -379,33 +390,45 @@ public class View extends JFrame implements ICalculatorInterface {
         display.setText("");
     }
 
-    private static void playSound(String path) {
-        try {
-            File audioFile = new File(path);
-            if (!audioFile.exists()) {
-                System.err.println("Audio file not found: " + path);
-                return;
-            }
+    private void playSound(String path) {
+        if (soundOn) {
+            try {
+                File audioFile = new File(path);
+                if (!audioFile.exists()) {
+                    System.err.println("Audio file not found: " + path);
+                    return;
+                }
 
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
-            Clip clip = AudioSystem.getClip();
-            clip.open(audioStream);
-            clip.start();
-        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
-            ex.printStackTrace();
+                AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
+                Clip clip = AudioSystem.getClip();
+                clip.open(audioStream);
+                clip.start();
+            } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
+                ex.printStackTrace();
+            }
         }
     }
+
     private void updateAdvancedButtonsVisibility() {
+        int w = getWidth();
+        int h = getHeight();
+        if (advancedModeEnabled) {
+            setSize((w / 4) * 6, h);
+        } else {
+            setSize((w / 6) * 4, h);
+        }
         power.setVisible(advancedModeEnabled);
         sin.setVisible(advancedModeEnabled);
         sqrt.setVisible(advancedModeEnabled);
         cos.setVisible(advancedModeEnabled);
         faculty.setVisible(advancedModeEnabled);
         tan.setVisible(advancedModeEnabled);
+        soundSwitch.setVisible(advancedModeEnabled);
     }
 
     private void initializeComponents() {
-        advancedModeSwitch = new JToggleButton("Advanced");
+        soundSwitch = new JToggleButton("\uD83D\uDD07");
+        advancedModeSwitch = new JToggleButton("fx");
         setUniformSize(advancedModeSwitch);
         clear = new JButton("AC");
         setUniformSize(clear);
