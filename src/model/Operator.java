@@ -11,5 +11,8 @@ public enum Operator {
     COS,
     TAN,
     FACULTY,
+    LOGARITHM,
+    MODULO,
+    RECOPROCAL, //Kehrwert
     NONE;
 }

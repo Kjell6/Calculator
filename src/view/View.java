@@ -44,6 +44,9 @@ public class View extends JFrame implements ICalculatorInterface {
     private JButton clear;
     private JButton delete;
     private JButton negPos;
+    private JButton reciprocal;
+    private JButton logarithm;
+    private JButton modulo;
     private JToggleButton advancedModeSwitch;
     private JToggleButton soundSwitch;
 
@@ -106,17 +109,17 @@ public class View extends JFrame implements ICalculatorInterface {
         addButton(buttonPanel, a6Button, 4, 2, gbc);
         addButton(buttonPanel, minus, 5,2, gbc);
 
+        addButton(buttonPanel, reciprocal, 0, 3, gbc);
         addButton(buttonPanel, tan, 1, 3, gbc);
         addButton(buttonPanel, a1Button, 2, 3, gbc);
         addButton(buttonPanel, a2Button, 3, 3, gbc);
         addButton(buttonPanel, a3Button, 4, 3, gbc);
         addButton(buttonPanel, plus, 5, 3, gbc);
 
-        // Make "0" button span two columns
-        //gbc.gridwidth = 2;
+        addButton(buttonPanel, logarithm, 0, 4, gbc);
+        addButton(buttonPanel, modulo, 1, 4, gbc);
         addButton(buttonPanel, advancedModeSwitch, 2, 4, gbc);
         addButton(buttonPanel, a0Button, 3, 4, gbc);
-        //gbc.gridwidth = 1;
         addButton(buttonPanel, buttonComma, 4, 4, gbc);
         addButton(buttonPanel, equals, 5, 4, gbc);
 
@@ -347,6 +350,33 @@ public class View extends JFrame implements ICalculatorInterface {
                 playSound(Config.OPERATOR_SOUND);
             }
         });
+        reciprocal.setUI(operatorButtons);
+        reciprocal.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                super.mousePressed(e);
+                logic.setOperator(Operator.RECOPROCAL);
+                playSound(Config.OPERATOR_SOUND);
+            }
+        });
+        logarithm.setUI(operatorButtons);
+        logarithm.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                super.mousePressed(e);
+                logic.setOperator(Operator.LOGARITHM);
+                playSound(Config.OPERATOR_SOUND);
+            }
+        });
+        modulo.setUI(operatorButtons);
+        modulo.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                super.mousePressed(e);
+                logic.setOperator(Operator.MODULO);
+                playSound(Config.OPERATOR_SOUND);
+            }
+        });
         clear.setUI(operatorButtons);
         clear.addMouseListener(new MouseAdapter() {
             @Override
@@ -423,6 +453,9 @@ public class View extends JFrame implements ICalculatorInterface {
         cos.setVisible(advancedModeEnabled);
         faculty.setVisible(advancedModeEnabled);
         tan.setVisible(advancedModeEnabled);
+        reciprocal.setVisible(advancedModeEnabled);
+        logarithm.setVisible(advancedModeEnabled);
+        modulo.setVisible(advancedModeEnabled);
         soundSwitch.setVisible(advancedModeEnabled);
     }
 
@@ -470,7 +503,7 @@ public class View extends JFrame implements ICalculatorInterface {
         setUniformSize(equals);
         sqrt = new JButton("√");
         setUniformSize(sqrt);
-        power = new JButton("x^y");
+        power = new JButton("x\u02B8");
         setUniformSize(power);
         faculty = new JButton("x!");
         setUniformSize(faculty);
@@ -480,6 +513,12 @@ public class View extends JFrame implements ICalculatorInterface {
         setUniformSize(cos);
         tan = new JButton("tan");
         setUniformSize(tan);
+        reciprocal = new JButton("¹⁄ₓ");
+        setUniformSize(reciprocal);
+        logarithm = new JButton("log₁₀");
+        setUniformSize(logarithm);
+        modulo= new JButton("%");
+        setUniformSize(modulo);
     }
 
     private void setUniformSize(AbstractButton button) {

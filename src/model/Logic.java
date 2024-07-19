@@ -96,6 +96,9 @@ public class Logic {
             case Operator.COS: result = (float) Math.cos(Math.toRadians(number1)); break;
             case Operator.TAN: result = (float) Math.tan(Math.toRadians(number1)); break;
             case Operator.FACULTY: result = faculty((int) number1); break;
+            case Operator.RECOPROCAL: result = 1 / number1; break;
+            case Operator.LOGARITHM: result = (float) Math.log10(number1); break;
+            case Operator.MODULO: result = number1 % number2; break;
         }
         displayNum = (result + "").replaceAll("0*$", "").replaceAll("\\.$", "");
         number1 = Float.parseFloat(displayNum);
@@ -106,7 +109,8 @@ public class Logic {
 
     private boolean isMonoOperato(Operator op) {
         return op == Operator.SQRT || op == Operator.SIN || op == Operator.COS
-                || op == Operator.TAN || op == Operator.FACULTY;
+                || op == Operator.TAN || op == Operator.FACULTY || op == Operator.RECOPROCAL
+                || op == Operator.LOGARITHM;
     }
 
     private float faculty(int n) {
