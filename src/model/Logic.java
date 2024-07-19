@@ -101,10 +101,15 @@ public class Logic {
             case Operator.MODULO: result = number1 % number2; break;
         }
         displayNum = (result + "").replaceAll("0*$", "").replaceAll("\\.$", "");
+        if (displayNum.contains("Infinity")) {
+            displayNum = "0";
+            publishDisplayChange("Keine Zahl");
+        } else {
+            publishDisplayChange(displayNum);
+        }
         number1 = Float.parseFloat(displayNum);
         number2 = 0;
         operator = Operator.NONE;
-        publishDisplayChange(displayNum);
     }
 
     private boolean isMonoOperato(Operator op) {
