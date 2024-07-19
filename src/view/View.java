@@ -4,7 +4,6 @@ import config.Config;
 import model.ICalculatorInterface;
 import model.Logic;
 import model.Operator;
-import com.apple.eawt.Application;
 import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
@@ -49,6 +48,8 @@ public class View extends JFrame implements ICalculatorInterface {
     private JButton modulo;
     private JToggleButton advancedModeSwitch;
     private JToggleButton soundSwitch;
+    private  CustomButtonUI buttonUI;
+    private CustomButtonUI operatorButtons;
 
     private final Logic logic;
     private boolean advancedModeEnabled = false;
@@ -137,7 +138,7 @@ public class View extends JFrame implements ICalculatorInterface {
         setIconImage(icon.getImage());
 
         //adding Button Lisener and UI
-        CustomButtonUI buttonUI = new CustomButtonUI();
+        buttonUI = new CustomButtonUI();
 
         advancedModeSwitch.setUI(buttonUI);
         advancedModeSwitch.addActionListener(e -> {
@@ -154,32 +155,32 @@ public class View extends JFrame implements ICalculatorInterface {
         });
 
         //Adds Listeners to the number Buttons
-        addNumberListener(a1Button, 1, buttonUI);
-        addNumberListener(a2Button, 2, buttonUI);
-        addNumberListener(a3Button, 3, buttonUI);
-        addNumberListener(a4Button, 4, buttonUI);
-        addNumberListener(a5Button, 5, buttonUI);
-        addNumberListener(a6Button, 6, buttonUI);
-        addNumberListener(a7Button, 7, buttonUI);
-        addNumberListener(a8Button, 8, buttonUI);
-        addNumberListener(a9Button, 9, buttonUI);
-        addNumberListener(a0Button, 0, buttonUI);
+        addNumberListener(a1Button, 1);
+        addNumberListener(a2Button, 2);
+        addNumberListener(a3Button, 3);
+        addNumberListener(a4Button, 4);
+        addNumberListener(a5Button, 5);
+        addNumberListener(a6Button, 6);
+        addNumberListener(a7Button, 7);
+        addNumberListener(a8Button, 8);
+        addNumberListener(a9Button, 9);
+        addNumberListener(a0Button, 0);
 
         //Adds Listeners to the Operator Buttons
-        CustomButtonUI operatorButtons = new CustomButtonUI(Config.OPERATOR_COLOR);
-        addOperatorListener(plus, Operator.PLUS, operatorButtons);
-        addOperatorListener(minus, Operator.MINUS, operatorButtons);
-        addOperatorListener(multi, Operator.MULTI, operatorButtons);
-        addOperatorListener(divide, Operator.DIVIDE, operatorButtons);
-        addOperatorListener(power, Operator.POWER, operatorButtons);
-        addOperatorListener(sqrt, Operator.SQRT, operatorButtons);
-        addOperatorListener(faculty, Operator.FACULTY, operatorButtons);
-        addOperatorListener(sin, Operator.SIN, operatorButtons);
-        addOperatorListener(cos, Operator.COS, operatorButtons);
-        addOperatorListener(tan, Operator.TAN, operatorButtons);
-        addOperatorListener(reciprocal, Operator.RECOPROCAL, operatorButtons);
-        addOperatorListener(logarithm, Operator.LOGARITHM, operatorButtons);
-        addOperatorListener(modulo, Operator.MODULO, operatorButtons);
+        operatorButtons = new CustomButtonUI(Config.OPERATOR_COLOR);
+        addOperatorListener(plus, Operator.PLUS);
+        addOperatorListener(minus, Operator.MINUS);
+        addOperatorListener(multi, Operator.MULTI);
+        addOperatorListener(divide, Operator.DIVIDE);
+        addOperatorListener(power, Operator.POWER);
+        addOperatorListener(sqrt, Operator.SQRT);
+        addOperatorListener(faculty, Operator.FACULTY);
+        addOperatorListener(sin, Operator.SIN);
+        addOperatorListener(cos, Operator.COS);
+        addOperatorListener(tan, Operator.TAN);
+        addOperatorListener(reciprocal, Operator.RECOPROCAL);
+        addOperatorListener(logarithm, Operator.LOGARITHM);
+        addOperatorListener(modulo, Operator.MODULO);
 
         equals.setUI(new CustomButtonUI(Config.EQUAL_COLOR));
         equals.addMouseListener(new MouseAdapter() {
@@ -261,7 +262,7 @@ public class View extends JFrame implements ICalculatorInterface {
         }
     }
 
-    private void addNumberListener(JButton button, int number, CustomButtonUI buttonUI) {
+    private void addNumberListener(JButton button, int number) {
         button.setUI(buttonUI);
         button.addMouseListener(new MouseAdapter() {
             @Override
@@ -273,7 +274,7 @@ public class View extends JFrame implements ICalculatorInterface {
         });
     }
 
-    private void addOperatorListener(JButton button, Operator op, CustomButtonUI operatorButtons) {
+    private void addOperatorListener(JButton button, Operator op) {
         button.setUI(operatorButtons);
         button.addMouseListener(new MouseAdapter() {
             @Override
