@@ -4,7 +4,7 @@ import config.Config;
 import model.ICalculatorInterface;
 import model.Logic;
 import model.Operator;
-
+import com.apple.eawt.Application;
 import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
@@ -133,6 +133,8 @@ public class View extends JFrame implements ICalculatorInterface {
         setLocationRelativeTo(null);
         setResizable(true);
         getContentPane().setBackground(Config.BACKGROUND);
+        ImageIcon icon = new ImageIcon("src/assets/Icon-512.png");
+        setIconImage(icon.getImage());
 
         //adding Button Lisener and UI
         CustomButtonUI buttonUI = new CustomButtonUI();
