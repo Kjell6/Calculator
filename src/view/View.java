@@ -46,7 +46,7 @@ public class View extends JFrame implements ICalculatorInterface {
     private JButton colorSwitch;
     private JButton advancedModeSwitch;
     private final CustomButtonUI buttonUI;
-    private final CustomButtonUI operatorButtons;
+    private final CustomButtonUI operatorButtonsUI;
 
     private final Logic logic;
     private boolean advancedModeEnabled = false;
@@ -173,7 +173,7 @@ public class View extends JFrame implements ICalculatorInterface {
         addNumberListener(a0Button, 0);
 
         //Adds Listeners to the Operator Buttons
-        operatorButtons = new CustomButtonUI(Config.OPERATOR_COLOR);
+        operatorButtonsUI = new CustomButtonUI(Config.OPERATOR_COLOR);
         addOperatorListener(plus, Operator.PLUS);
         addOperatorListener(minus, Operator.MINUS);
         addOperatorListener(multi, Operator.MULTI);
@@ -188,7 +188,7 @@ public class View extends JFrame implements ICalculatorInterface {
         addOperatorListener(logarithm, Operator.LOGARITHM);
         addOperatorListener(modulo, Operator.MODULO);
 
-        colorSwitch.setUI(buttonUI);
+        colorSwitch.setUI(operatorButtonsUI);
         colorSwitch.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -213,7 +213,7 @@ public class View extends JFrame implements ICalculatorInterface {
                 logic.decimalP();
             }
         });
-        clear.setUI(operatorButtons);
+        clear.setUI(operatorButtonsUI);
         clear.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -221,7 +221,7 @@ public class View extends JFrame implements ICalculatorInterface {
                 logic.clear();
             }
         });
-        delete.setUI(operatorButtons);
+        delete.setUI(operatorButtonsUI);
         delete.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -229,7 +229,7 @@ public class View extends JFrame implements ICalculatorInterface {
                 logic.delete();
             }
         });
-        negPos.setUI(operatorButtons);
+        negPos.setUI(operatorButtonsUI);
         negPos.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
@@ -266,7 +266,7 @@ public class View extends JFrame implements ICalculatorInterface {
     }
 
     private void addOperatorListener(JButton button, Operator op) {
-        button.setUI(operatorButtons);
+        button.setUI(operatorButtonsUI);
         button.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
