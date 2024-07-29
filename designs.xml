@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<java version="21.0.3" class="java.beans.XMLDecoder">
+ <object class="java.util.HashMap">
+  <void method="put">
+   <string>Default</string>
+   <object class="java.util.HashMap">
+    <void method="put">
+     <string>number</string>
+     <object class="java.awt.Color">
+      <int>51</int>
+      <int>51</int>
+      <int>51</int>
+      <int>255</int>
+     </object>
+    </void>
+    <void method="put">
+     <string>background</string>
+     <object class="java.awt.Color">
+      <int>61</int>
+      <int>63</int>
+      <int>60</int>
+      <int>255</int>
+     </object>
+    </void>
+    <void method="put">
+     <string>equals</string>
+     <object class="java.awt.Color">
+      <int>255</int>
+      <int>159</int>
+      <int>10</int>
+      <int>255</int>
+     </object>
+    </void>
+    <void method="put">
+     <string>operator</string>
+     <object class="java.awt.Color">
+      <int>165</int>
+      <int>165</int>
+      <int>165</int>
+      <int>255</int>
+     </object>
+    </void>
+   </object>
+  </void>
+ </object>
+</java>

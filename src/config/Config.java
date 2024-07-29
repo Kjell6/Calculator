@@ -16,11 +16,7 @@ public class Config {
     public static Color OPERATOR_COLOR = new Color(165, 165, 165);
     public static Color BACKGROUND =  new Color(61, 63, 60);
 
-
-    public static final String NUMBER_SOUND = "src/assets/Number.wav";
-    public static final String EQUAL_SOUND = "src/assets/Equal.wav";
-    public static final String OPERATOR_SOUND = "src/assets/Operators.wav";
-    public static final String DELETE_SOUND = "src/assets/Delete.wav";
+    public static String FILENAME = "designs.xml";
 
     public static final void CHANGE_BUTTON_COLOR(Color c) {
         BUTTON_COLOR = c;
