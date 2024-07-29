@@ -58,7 +58,7 @@ public class ColorChangeDialog extends JDialog {
             }
         });
 
-        changeBackgroundColorButton.addActionListener(new ActionListener() {
+        changeEqualsColorButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Color newColor = JColorChooser.showDialog(ColorChangeDialog.this, "Choose Equals Color", Config.EQUAL_COLOR);
@@ -68,13 +68,15 @@ public class ColorChangeDialog extends JDialog {
             }
         });
 
+
+
         updateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dispose();
                 frame.dispose();
                 View view = new View(log);
-                view.enableAdvanced();
+                view.changeAdvancedMode();
             }
         });
 

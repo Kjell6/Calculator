@@ -4,7 +4,6 @@ import config.Config;
 import model.ICalculatorInterface;
 import model.Logic;
 import model.Operator;
-import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import javax.swing.border.EmptyBorder;
@@ -13,8 +12,6 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
-import java.io.IOException;
 
 public class View extends JFrame implements ICalculatorInterface {
     private JPanel mainPanel;
@@ -48,7 +45,7 @@ public class View extends JFrame implements ICalculatorInterface {
     private JButton logarithm;
     private JButton modulo;
     private JButton colorSwitch;
-    private JToggleButton advancedModeSwitch;
+    private JButton advancedModeSwitch;
     private  CustomButtonUI buttonUI;
     private CustomButtonUI operatorButtons;
 
@@ -156,10 +153,12 @@ public class View extends JFrame implements ICalculatorInterface {
         buttonUI = new CustomButtonUI();
 
         advancedModeSwitch.setUI(buttonUI);
-        advancedModeSwitch.addActionListener(e -> {
-            
-            advancedModeEnabled = advancedModeSwitch.isSelected();
-            updateAdvancedButtonsVisibility();
+        advancedModeSwitch.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                super.mousePressed(e);
+                changeAdvancedMode();
+            }
         });
 
         //Adds Listeners to the number Buttons
@@ -299,9 +298,14 @@ public class View extends JFrame implements ICalculatorInterface {
         colorSwitch.setVisible(advancedModeEnabled);
     }
 
+    public void changeAdvancedMode() {
+        advancedModeEnabled = advancedModeEnabled ? false : true;
+        updateAdvancedButtonsVisibility();
+    }
+
     private void initializeComponents() {
         colorSwitch = new JButton("\uD83C\uDFA8");
-        advancedModeSwitch = new JToggleButton("fx");
+        advancedModeSwitch = new JButton("fx");
         setUniformSize(advancedModeSwitch);
         clear = new JButton("AC");
         setUniformSize(clear);
@@ -375,10 +379,5 @@ public class View extends JFrame implements ICalculatorInterface {
         gbc.gridx = x;
         gbc.gridy = y;
         panel.add(button, gbc);
-    }
-
-    public void enableAdvanced() {
-        advancedModeEnabled = true;
-        updateAdvancedButtonsVisibility();
     }
 }
