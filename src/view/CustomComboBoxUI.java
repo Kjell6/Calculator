@@ -3,10 +3,7 @@ package view;
 import config.Config;
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicComboBoxUI;
-import javax.swing.plaf.basic.BasicComboPopup;
-import javax.swing.plaf.basic.ComboPopup;
 import java.awt.*;
-import java.awt.geom.RoundRectangle2D;
 
 public class CustomComboBoxUI extends BasicComboBoxUI {
     private static final int ARROW_WIDTH = 15;
@@ -17,7 +14,7 @@ public class CustomComboBoxUI extends BasicComboBoxUI {
         return new ArrowButton();
     }
 
-    private class ArrowButton extends JButton {
+    private static class ArrowButton extends JButton {
         ArrowButton() {
             setContentAreaFilled(false);
             setBorder(BorderFactory.createEmptyBorder());
@@ -49,7 +46,14 @@ public class CustomComboBoxUI extends BasicComboBoxUI {
             public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
                 super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
                 setBackground(isSelected ? new Color(101, 136, 174) : Config.OPERATOR_COLOR);
-                setForeground(isSelected ? Color.WHITE : Color.BLACK);
+                //Changes Text color depending on the Brightness of the Button
+                float[] hsbWerte = Color.RGBtoHSB(Config.OPERATOR_COLOR.getRed(), Config.OPERATOR_COLOR.getGreen(), Config.OPERATOR_COLOR.getBlue(), null);
+                float brightness = hsbWerte[2];
+                if (brightness < 0.5f || isSelected) {
+                    setForeground(Color.WHITE);
+                } else {
+                    setForeground(Color.BLACK);
+                }
                 setBorder(BorderFactory.createEmptyBorder(2, 5, 2, 5));
                 return this;
             }
@@ -60,7 +64,13 @@ public class CustomComboBoxUI extends BasicComboBoxUI {
     public void installUI(JComponent c) {
         super.installUI(c);
         comboBox.setBackground(Config.OPERATOR_COLOR);
-        comboBox.setForeground(Color.BLACK);
+        float[] hsbWerte = Color.RGBtoHSB(Config.OPERATOR_COLOR.getRed(), Config.OPERATOR_COLOR.getGreen(), Config.OPERATOR_COLOR.getBlue(), null);
+        float brightness = hsbWerte[2];
+        if (brightness < 0.5f) {
+            comboBox.setForeground(Color.WHITE);
+        } else {
+            comboBox.setForeground(Color.BLACK);
+        }
         comboBox.setPreferredSize(new Dimension(comboBox.getPreferredSize().width, BOX_HEIGHT));
     }
 

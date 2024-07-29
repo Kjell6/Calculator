@@ -2,41 +2,41 @@
 <java version="21.0.3" class="java.beans.XMLDecoder">
  <object class="java.util.HashMap">
   <void method="put">
-   <string>Red</string>
+   <string>Green Accent Color</string>
    <object class="java.util.HashMap">
     <void method="put">
      <string>number</string>
      <object class="java.awt.Color">
-      <int>199</int>
-      <int>198</int>
-      <int>186</int>
+      <int>48</int>
+      <int>49</int>
+      <int>57</int>
       <int>255</int>
      </object>
     </void>
     <void method="put">
      <string>background</string>
      <object class="java.awt.Color">
-      <int>218</int>
-      <int>213</int>
-      <int>202</int>
+      <int>16</int>
+      <int>17</int>
+      <int>24</int>
       <int>255</int>
      </object>
     </void>
     <void method="put">
      <string>equals</string>
      <object class="java.awt.Color">
-      <int>230</int>
-      <int>55</int>
-      <int>50</int>
+      <int>61</int>
+      <int>220</int>
+      <int>99</int>
       <int>255</int>
      </object>
     </void>
     <void method="put">
      <string>operator</string>
      <object class="java.awt.Color">
-      <int>122</int>
-      <int>121</int>
-      <int>118</int>
+      <int>192</int>
+      <int>193</int>
+      <int>201</int>
       <int>255</int>
      </object>
     </void>
@@ -84,41 +84,41 @@
    </object>
   </void>
   <void method="put">
-   <string>Bright Orange</string>
+   <string>Beige, Red Accent</string>
    <object class="java.util.HashMap">
     <void method="put">
      <string>number</string>
      <object class="java.awt.Color">
-      <int>29</int>
-      <int>29</int>
-      <int>29</int>
+      <int>199</int>
+      <int>198</int>
+      <int>186</int>
       <int>255</int>
      </object>
     </void>
     <void method="put">
      <string>background</string>
      <object class="java.awt.Color">
-      <int>12</int>
-      <int>12</int>
-      <int>12</int>
+      <int>218</int>
+      <int>213</int>
+      <int>202</int>
       <int>255</int>
      </object>
     </void>
     <void method="put">
      <string>equals</string>
      <object class="java.awt.Color">
-      <int>245</int>
-      <int>72</int>
-      <int>0</int>
+      <int>230</int>
+      <int>55</int>
+      <int>50</int>
       <int>255</int>
      </object>
     </void>
     <void method="put">
      <string>operator</string>
      <object class="java.awt.Color">
-      <int>134</int>
-      <int>134</int>
-      <int>134</int>
+      <int>122</int>
+      <int>121</int>
+      <int>118</int>
       <int>255</int>
      </object>
     </void>
@@ -207,41 +207,41 @@
    </object>
   </void>
   <void method="put">
-   <string>Green</string>
+   <string>Bright Orange Accent Color</string>
    <object class="java.util.HashMap">
     <void method="put">
      <string>number</string>
      <object class="java.awt.Color">
-      <int>48</int>
-      <int>49</int>
-      <int>57</int>
+      <int>29</int>
+      <int>29</int>
+      <int>29</int>
       <int>255</int>
      </object>
     </void>
     <void method="put">
      <string>background</string>
      <object class="java.awt.Color">
-      <int>16</int>
-      <int>17</int>
-      <int>24</int>
+      <int>12</int>
+      <int>12</int>
+      <int>12</int>
       <int>255</int>
      </object>
     </void>
     <void method="put">
      <string>equals</string>
      <object class="java.awt.Color">
-      <int>61</int>
-      <int>220</int>
-      <int>99</int>
+      <int>245</int>
+      <int>72</int>
+      <int>0</int>
       <int>255</int>
      </object>
     </void>
     <void method="put">
      <string>operator</string>
      <object class="java.awt.Color">
-      <int>192</int>
-      <int>193</int>
-      <int>201</int>
+      <int>134</int>
+      <int>134</int>
+      <int>134</int>
       <int>255</int>
      </object>
     </void>
