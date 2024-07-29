@@ -71,14 +71,26 @@ public class View extends JFrame implements ICalculatorInterface {
         display.setBackground(Config.BACKGROUND);
         display.setForeground(Color.WHITE);
         display.setFont(new Font("Helvetica", Font.PLAIN, 60));
-        display.setPreferredSize(new Dimension(300, 50));
+        display.setPreferredSize(new Dimension(300, 61));
         display.setText("0"); // Set initial text
-        mainPanel.add(display,BorderLayout.NORTH);
+
         // Text-Alignment
         StyledDocument doc = display.getStyledDocument();
         SimpleAttributeSet rightAlign = new SimpleAttributeSet();
         StyleConstants.setAlignment(rightAlign, StyleConstants.ALIGN_RIGHT);
         doc.setParagraphAttributes(0, doc.getLength(), rightAlign, false);
+
+        //Add horizontal Scrollbar
+        JScrollPane scrollPane = new JScrollPane(display);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        scrollPane.setBackground(Config.BACKGROUND);
+        scrollPane.setBorder(null);
+        scrollPane.setViewportBorder(null);
+        // Custom Scrollbar
+        JScrollBar horizontalScrollBar = scrollPane.getHorizontalScrollBar();
+        horizontalScrollBar.setUI(new CustomScrollBarUI());
+        mainPanel.add(scrollPane, BorderLayout.NORTH);
 
         // Button panel with GridBagLayout
         JPanel buttonPanel = new JPanel(new GridBagLayout());
