@@ -21,4 +21,17 @@ public class Config {
     public static final String EQUAL_SOUND = "src/assets/Equal.wav";
     public static final String OPERATOR_SOUND = "src/assets/Operators.wav";
     public static final String DELETE_SOUND = "src/assets/Delete.wav";
+
+    public static final void CHANGE_BUTTON_COLOR(Color c) {
+        BUTTON_COLOR = c;
+    }
+    public static final void CHANGE_EQUAL_COLOR(Color c) {
+        EQUAL_COLOR = c;
+    }
+    public static final void CHANGE_OPERATOR_COLOR(Color c) {
+        OPERATOR_COLOR = c;
+    }
+    public static final void CHANGE_BACKGROUND(Color c) {
+        BACKGROUND = c;
+    }
 }

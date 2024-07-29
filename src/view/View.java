@@ -47,8 +47,8 @@ public class View extends JFrame implements ICalculatorInterface {
     private JButton reciprocal;
     private JButton logarithm;
     private JButton modulo;
+    private JButton colorSwitch;
     private JToggleButton advancedModeSwitch;
-    private JToggleButton soundSwitch;
     private  CustomButtonUI buttonUI;
     private CustomButtonUI operatorButtons;
 
@@ -102,7 +102,7 @@ public class View extends JFrame implements ICalculatorInterface {
 
         mainPanel.add(advancedModeSwitch, BorderLayout.SOUTH);
         addButton(buttonPanel, power, 0, 0, gbc);
-        addButton(buttonPanel, soundSwitch, 1, 0, gbc);
+        addButton(buttonPanel, colorSwitch, 1, 0, gbc);
         //addButton(buttonPanel, advancedModeSwitch, 1, 0, gbc);
         addButton(buttonPanel, clear, 2, 0, gbc);
         addButton(buttonPanel, negPos, 3, 0, gbc);
@@ -157,16 +157,9 @@ public class View extends JFrame implements ICalculatorInterface {
 
         advancedModeSwitch.setUI(buttonUI);
         advancedModeSwitch.addActionListener(e -> {
-            playSound(Config.OPERATOR_SOUND);
+            
             advancedModeEnabled = advancedModeSwitch.isSelected();
             updateAdvancedButtonsVisibility();
-        });
-        soundSwitch.setUI(buttonUI);
-        soundSwitch.addActionListener(e -> {
-            playSound(Config.OPERATOR_SOUND);
-            soundOn = soundSwitch.isSelected();
-            String soundSwitchText = soundOn ? "\uD83D\uDD09" : "\uD83D\uDD07";
-            soundSwitch.setText(soundSwitchText);
         });
 
         //Adds Listeners to the number Buttons
@@ -197,13 +190,21 @@ public class View extends JFrame implements ICalculatorInterface {
         addOperatorListener(logarithm, Operator.LOGARITHM);
         addOperatorListener(modulo, Operator.MODULO);
 
+        colorSwitch.setUI(buttonUI);
+        colorSwitch.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                super.mousePressed(e);
+                new ColorChangeDialog(View.this, logic);
+            }
+        });
+
         equals.setUI(new CustomButtonUI(Config.EQUAL_COLOR));
         equals.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
                 logic.result();
-                playSound(Config.EQUAL_SOUND);
             }
         });
         buttonComma.setUI(buttonUI);
@@ -212,7 +213,6 @@ public class View extends JFrame implements ICalculatorInterface {
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
                 logic.decimalP();
-                playSound(Config.NUMBER_SOUND);
             }
         });
         clear.setUI(operatorButtons);
@@ -221,7 +221,6 @@ public class View extends JFrame implements ICalculatorInterface {
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
                 logic.clear();
-                playSound(Config.DELETE_SOUND);
             }
         });
         delete.setUI(operatorButtons);
@@ -230,7 +229,6 @@ public class View extends JFrame implements ICalculatorInterface {
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
                 logic.delete();
-                playSound(Config.DELETE_SOUND);
             }
         });
         negPos.setUI(operatorButtons);
@@ -239,7 +237,7 @@ public class View extends JFrame implements ICalculatorInterface {
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
                 logic.plusMinus();
-                playSound(Config.OPERATOR_SOUND);
+                
             }
         });
         updateAdvancedButtonsVisibility();
@@ -257,26 +255,7 @@ public class View extends JFrame implements ICalculatorInterface {
     public void displayNull() {
         display.setText("");
     }
-
-    private void playSound(String path) {
-        if (soundOn) {
-            try {
-                File audioFile = new File(path);
-                if (!audioFile.exists()) {
-                    System.err.println("Audio file not found: " + path);
-                    return;
-                }
-
-                AudioInputStream audioStream = AudioSystem.getAudioInputStream(audioFile);
-                Clip clip = AudioSystem.getClip();
-                clip.open(audioStream);
-                clip.start();
-            } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
-
+    
     private void addNumberListener(JButton button, int number) {
         button.setUI(buttonUI);
         button.addMouseListener(new MouseAdapter() {
@@ -284,7 +263,6 @@ public class View extends JFrame implements ICalculatorInterface {
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
                 logic.numberInput(number);
-                playSound(Config.NUMBER_SOUND);
             }
         });
     }
@@ -296,7 +274,7 @@ public class View extends JFrame implements ICalculatorInterface {
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
                 logic.setOperator(op);
-                playSound(Config.OPERATOR_SOUND);
+                
             }
         });
     }
@@ -318,11 +296,11 @@ public class View extends JFrame implements ICalculatorInterface {
         reciprocal.setVisible(advancedModeEnabled);
         logarithm.setVisible(advancedModeEnabled);
         modulo.setVisible(advancedModeEnabled);
-        soundSwitch.setVisible(advancedModeEnabled);
+        colorSwitch.setVisible(advancedModeEnabled);
     }
 
     private void initializeComponents() {
-        soundSwitch = new JToggleButton("\uD83D\uDD07");
+        colorSwitch = new JButton("\uD83C\uDFA8");
         advancedModeSwitch = new JToggleButton("fx");
         setUniformSize(advancedModeSwitch);
         clear = new JButton("AC");
@@ -397,5 +375,10 @@ public class View extends JFrame implements ICalculatorInterface {
         gbc.gridx = x;
         gbc.gridy = y;
         panel.add(button, gbc);
+    }
+
+    public void enableAdvanced() {
+        advancedModeEnabled = true;
+        updateAdvancedButtonsVisibility();
     }
 }
