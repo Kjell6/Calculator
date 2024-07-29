@@ -24,24 +24,42 @@ class CustomButtonUI extends BasicButtonUI {
         AbstractButton button = (AbstractButton) c;
         button.setOpaque(false);
         button.setBorder(new EmptyBorder(5, 15, 5, 15));
-        button.setForeground(Color.WHITE);
+        if (buttonColor == Config.OPERATOR_COLOR) {
+            button.setForeground(Color.BLACK);
+        } else {
+            button.setForeground(Color.WHITE);
+        }
     }
 
     @Override
     public void paint (Graphics g, JComponent c) {
         AbstractButton b = (AbstractButton) c;
-        paintBackground(g, b, b.getModel().isPressed() ? 2 : 0);
-        super.paint(g, c);
+        paintButton(g, b, b.getModel().isPressed());
+
+        // Draw Text
+        FontMetrics metrics = g.getFontMetrics(getCustomFont(b));
+        String text = b.getText();
+        int x = (b.getWidth() - metrics.stringWidth(text)) / 2;
+        int y = ((b.getHeight() - metrics.getHeight()) / 2) + metrics.getAscent();
+
+        g.setColor(b.getForeground());
+        g.setFont(getCustomFont(b));
+        g.drawString(text, x, y);
     }
 
-    private void paintBackground (Graphics g, JComponent c, int yOffset) {
-        Dimension size = c.getSize();
+    private Font getCustomFont(AbstractButton b) {
+        return new Font("Helvetica", Font.PLAIN, 16);
+    }
+
+    private void paintButton(Graphics g, JComponent c, boolean isPressed) {
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         Color color = this.buttonColor == null ? Config.BUTTON_COLOR : this.buttonColor;
-        g.setColor(color.darker());
-        g.fillRoundRect(0, yOffset, size.width - 3, size.height - yOffset - 3, 10, 10);
+        if (isPressed) color = color.darker();
         g.setColor(color);
-        g.fillRoundRect(0, yOffset, size.width - 3, size.height + yOffset - 5 - 3, 10, 10);
+        int diameter = Math.min(c.getWidth(), c.getHeight()) - 3;
+        int x = (c.getWidth() - diameter) / 2;
+        int y = (c.getHeight() - diameter) / 2;
+        g2.fillOval(x, y, diameter, diameter);
     }
 }

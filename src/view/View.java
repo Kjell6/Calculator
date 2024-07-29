@@ -7,6 +7,7 @@ import model.Operator;
 import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
@@ -69,8 +70,8 @@ public class View extends JFrame implements ICalculatorInterface {
         display.setEditable(false);
         display.setBackground(Config.BACKGROUND);
         display.setForeground(Color.WHITE);
-        display.setFont(new Font("Arial", Font.PLAIN, 52)); // Increase font size
-        display.setPreferredSize(new Dimension(300, 60)); // Set preferred size
+        display.setFont(new Font("Helvetica", Font.PLAIN, 60));
+        display.setPreferredSize(new Dimension(300, 50));
         display.setText("0"); // Set initial text
         mainPanel.add(display,BorderLayout.NORTH);
         // Text-Alignment
@@ -126,13 +127,15 @@ public class View extends JFrame implements ICalculatorInterface {
 
         //Frame Properties
         mainPanel.add(buttonPanel, BorderLayout.CENTER);
+        mainPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
         add(mainPanel);
+
         setContentPane(mainPanel);
         setTitle("Calculator");
-        setSize(450, 400); //height will be: (height / 6) * 4
+        setSize(360, 400); //height will be: (height / 6) * 4
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        setResizable(true);
+        setResizable(false);
         getContentPane().setBackground(Config.BACKGROUND);
         ImageIcon icon = new ImageIcon("src/assets/Icon-512.png");
         setIconImage(icon.getImage());
