@@ -1,14 +1,5 @@
 package model;
 
-import config.Config;
-import javafx.scene.control.ColorPicker;
-import view.ColorChangeDialog;
-import view.View;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -64,7 +55,7 @@ public class Logic {
     }
 
     public void delete() {
-        if (displayNum.length() == 1 || displayNum.length() == 0) {
+        if (displayNum.length() == 1 || displayNum.isEmpty()) {
             displayNum = "";
         } else {
             displayNum = displayNum.substring(0, displayNum.length() - 1);
@@ -91,23 +82,22 @@ public class Logic {
     }
 
     public void result() {
-        float result = 0;
-        switch (operator) {
-            case Operator.PLUS: result = number1 + number2; break;
-            case Operator.MINUS: result = number1 - number2; break;
-            case Operator.MULTI: result = number1 * number2; break;
-            case Operator.DIVIDE: result = number1 / number2; break;
-            case Operator.NONE: result = number1; break;
-            case Operator.POWER: result = (float) Math.pow(number1, number2); break;
-            case Operator.SQRT: result = (float) Math.sqrt(number1); break;
-            case Operator.SIN: result = (float) Math.sin(Math.toRadians(number1)); break;
-            case Operator.COS: result = (float) Math.cos(Math.toRadians(number1)); break;
-            case Operator.TAN: result = (float) Math.tan(Math.toRadians(number1)); break;
-            case Operator.FACULTY: result = faculty((int) number1); break;
-            case Operator.RECOPROCAL: result = 1 / number1; break;
-            case Operator.LOGARITHM: result = (float) Math.log10(number1); break;
-            case Operator.MODULO: result = number1 % number2; break;
-        }
+        float result = switch (operator) {
+            case Operator.PLUS -> number1 + number2;
+            case Operator.MINUS -> number1 - number2;
+            case Operator.MULTI -> number1 * number2;
+            case Operator.DIVIDE -> number1 / number2;
+            case Operator.NONE -> number1;
+            case Operator.POWER -> (float) Math.pow(number1, number2);
+            case Operator.SQRT -> (float) Math.sqrt(number1);
+            case Operator.SIN -> (float) Math.sin(Math.toRadians(number1));
+            case Operator.COS -> (float) Math.cos(Math.toRadians(number1));
+            case Operator.TAN -> (float) Math.tan(Math.toRadians(number1));
+            case Operator.FACULTY -> faculty((int) number1);
+            case Operator.RECOPROCAL -> 1 / number1;
+            case Operator.LOGARITHM -> (float) Math.log10(number1);
+            case Operator.MODULO -> number1 % number2;
+        };
         displayNum = (result + "").replaceAll("0*$", "").replaceAll("\\.$", "");
         if (displayNum.contains("Infinity")) {
             displayNum = "";
@@ -147,12 +137,10 @@ public class Logic {
 
     /**
      * Unsubscribe/ remove a listener from the subscriber list
-     *
-     * @param listener  the listener
-     */
     public void unsubscribe(ICalculatorInterface listener) {
         subscribers.remove(listener);
     }
+    */
 
     private void publishDisplayChange(String disp) {
         for (ICalculatorInterface listener : subscribers) {

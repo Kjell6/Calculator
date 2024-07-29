@@ -14,7 +14,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class View extends JFrame implements ICalculatorInterface {
-    private JPanel mainPanel;
     private JButton a1Button;
     private JButton a2Button;
     private JButton a3Button;
@@ -37,7 +36,7 @@ public class View extends JFrame implements ICalculatorInterface {
     private JButton cos;
     private JButton tan;
     private JButton faculty;
-    private JTextPane display;
+    private final JTextPane display;
     private JButton clear;
     private JButton delete;
     private JButton negPos;
@@ -46,12 +45,12 @@ public class View extends JFrame implements ICalculatorInterface {
     private JButton modulo;
     private JButton colorSwitch;
     private JButton advancedModeSwitch;
-    private  CustomButtonUI buttonUI;
-    private CustomButtonUI operatorButtons;
+    private final CustomButtonUI buttonUI;
+    private final CustomButtonUI operatorButtons;
 
     private final Logic logic;
     private boolean advancedModeEnabled = false;
-    private boolean soundOn = false;
+    private final boolean soundOn = false;
 
     public View(Logic l) {
         this.logic = l;
@@ -60,7 +59,7 @@ public class View extends JFrame implements ICalculatorInterface {
         initializeComponents();
 
         // Main panel with BorderLayout
-        mainPanel = new JPanel(new BorderLayout());
+        JPanel mainPanel = new JPanel(new BorderLayout());
 
         // Display at the top
         display = new JTextPane();
@@ -299,7 +298,7 @@ public class View extends JFrame implements ICalculatorInterface {
     }
 
     public void changeAdvancedMode() {
-        advancedModeEnabled = advancedModeEnabled ? false : true;
+        advancedModeEnabled = !advancedModeEnabled;
         updateAdvancedButtonsVisibility();
     }
 
@@ -347,7 +346,7 @@ public class View extends JFrame implements ICalculatorInterface {
         setUniformSize(equals);
         sqrt = new JButton("√");
         setUniformSize(sqrt);
-        power = new JButton("x\u02B8");
+        power = new JButton("xʸ");
         setUniformSize(power);
         faculty = new JButton("x!");
         setUniformSize(faculty);

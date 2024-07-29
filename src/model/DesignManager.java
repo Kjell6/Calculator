@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DesignManager {
-    private static Map<String, Map<String, Color>> designs = getPermDesigns();
+    private static final Map<String, Map<String, Color>> designs = getPermDesigns();
 
     public static void saveTempDesign(String name, Color background, Color number, Color operator, Color equals) {
         Map<String, Color> design = new HashMap<>();
@@ -47,7 +47,7 @@ public class DesignManager {
             return result;
         } catch (IOException | ClassCastException e) {
             System.out.println("fail");
-            return null;
+            return new HashMap<String, Map<String, Color>>();
         }
     }
 

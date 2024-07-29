@@ -3,21 +3,15 @@ package view;
 import config.Config;
 import model.Logic;
 import model.DesignManager;
-
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.beans.XMLEncoder;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 public class ColorChangeDialog extends JDialog {
-    private JFrame parentFrame;
-    private Logic logic;
-    private JComboBox<String> designComboBox;
+    private final JFrame parentFrame;
+    private final Logic logic;
+    private final JComboBox<String> designComboBox;
 
     public ColorChangeDialog(JFrame frame, Logic log) {
         this.parentFrame = frame;
@@ -39,7 +33,9 @@ public class ColorChangeDialog extends JDialog {
         JPanel designButtons = new JPanel(new GridLayout(1, 2));
         JButton saveButton = new JButton("Save Design");
         JButton deleteButton = new JButton("Delete Design");
+
         designComboBox = new JComboBox<>(DesignManager.getDesignNames());
+        designComboBox.setUI(new CustomComboBoxUI());
 
         //Update Button
         JButton updateButton = new JButton("Update");
@@ -53,43 +49,31 @@ public class ColorChangeDialog extends JDialog {
         saveButton.setUI(ui);
         deleteButton.setUI(ui);
 
-        changeBackgroundColorButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Color newColor = JColorChooser.showDialog(ColorChangeDialog.this, "Choose Background Color", Config.BACKGROUND);
-                if (newColor != null) {
-                    Config.CHANGE_BACKGROUND(newColor);
-                }
+        changeBackgroundColorButton.addActionListener(e -> {
+            Color newColor = JColorChooser.showDialog(ColorChangeDialog.this, "Choose Background Color", Config.BACKGROUND);
+            if (newColor != null) {
+                Config.CHANGE_BACKGROUND(newColor);
             }
         });
 
-        changeForegroundColorButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Color newColor = JColorChooser.showDialog(ColorChangeDialog.this, "Choose Button Color", Config.BUTTON_COLOR);
-                if (newColor != null) {
-                    Config.CHANGE_BUTTON_COLOR(newColor);
-                }
+        changeForegroundColorButton.addActionListener(e -> {
+            Color newColor = JColorChooser.showDialog(ColorChangeDialog.this, "Choose Button Color", Config.BUTTON_COLOR);
+            if (newColor != null) {
+                Config.CHANGE_BUTTON_COLOR(newColor);
             }
         });
 
-        changeButtonColorButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Color newColor = JColorChooser.showDialog(ColorChangeDialog.this, "Choose Operator Color", Config.OPERATOR_COLOR);
-                if (newColor != null) {
-                    Config.CHANGE_OPERATOR_COLOR(newColor);
-                }
+        changeButtonColorButton.addActionListener(e -> {
+            Color newColor = JColorChooser.showDialog(ColorChangeDialog.this, "Choose Operator Color", Config.OPERATOR_COLOR);
+            if (newColor != null) {
+                Config.CHANGE_OPERATOR_COLOR(newColor);
             }
         });
 
-        changeEqualsColorButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Color newColor = JColorChooser.showDialog(ColorChangeDialog.this, "Choose Equals Color", Config.EQUAL_COLOR);
-                if (newColor != null) {
-                    Config.CHANGE_EQUAL_COLOR(newColor);
-                }
+        changeEqualsColorButton.addActionListener(e -> {
+            Color newColor = JColorChooser.showDialog(ColorChangeDialog.this, "Choose Equals Color", Config.EQUAL_COLOR);
+            if (newColor != null) {
+                Config.CHANGE_EQUAL_COLOR(newColor);
             }
         });
 
@@ -134,13 +118,12 @@ public class ColorChangeDialog extends JDialog {
         colorButtons.add(changeButtonColorButton);
         colorButtons.add(changeEqualsColorButton);
         colorButtons.setBackground(Config.BACKGROUND);
-        add(colorButtons);
-        add(designComboBox);
+
         designButtons.add(saveButton);
         designButtons.add(deleteButton);
         designButtons.setBackground(Config.BACKGROUND);
-        add(designButtons);
-        add(updateButton);
+
+
 
         // Add components using GridBagLayout
         gbc.fill = GridBagConstraints.BOTH;
