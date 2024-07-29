@@ -65,7 +65,14 @@ public class View extends JFrame implements ICalculatorInterface {
         display = new JTextPane();
         display.setEditable(false);
         display.setBackground(Config.BACKGROUND);
-        display.setForeground(Color.WHITE);
+        //Changes Text color depending on the Brightness of the Background
+        float[] hsbWerte = Color.RGBtoHSB(Config.BACKGROUND.getRed(), Config.BACKGROUND.getGreen(), Config.BACKGROUND.getBlue(), null);
+        float brightness = hsbWerte[2];
+        if (brightness < 0.5f) {
+            display.setForeground(Color.WHITE);
+        } else {
+            display.setForeground(Color.BLACK);
+        }
         display.setFont(new Font("Helvetica", Font.PLAIN, 60));
         display.setPreferredSize(new Dimension(300, 61));
         display.setText("0"); // Set initial text

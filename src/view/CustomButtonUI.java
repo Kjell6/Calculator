@@ -15,7 +15,7 @@ class CustomButtonUI extends BasicButtonUI {
     }
 
     public CustomButtonUI() {
-        this.buttonColor = null;
+        this.buttonColor = Config.BUTTON_COLOR;
     }
 
     @Override
@@ -24,10 +24,13 @@ class CustomButtonUI extends BasicButtonUI {
         AbstractButton button = (AbstractButton) c;
         button.setOpaque(false);
         button.setBorder(new EmptyBorder(5, 15, 5, 15));
-        if (buttonColor == Config.OPERATOR_COLOR) {
-            button.setForeground(Color.BLACK);
-        } else {
+        //Changes Text color depending on the Brightness of the Button
+        float[] hsbWerte = Color.RGBtoHSB(buttonColor.getRed(), buttonColor.getGreen(), buttonColor.getBlue(), null);
+        float brightness = hsbWerte[2];
+        if (brightness < 0.5f) {
             button.setForeground(Color.WHITE);
+        } else {
+            button.setForeground(Color.BLACK);
         }
     }
 
@@ -54,7 +57,7 @@ class CustomButtonUI extends BasicButtonUI {
     private void paintButton(Graphics g, JComponent c, boolean isPressed) {
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        Color color = this.buttonColor == null ? Config.BUTTON_COLOR : this.buttonColor;
+        Color color = this.buttonColor;
         if (isPressed) color = color.darker();
         g.setColor(color);
         int diameter = Math.min(c.getWidth(), c.getHeight()) - 3;

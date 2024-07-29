@@ -2,6 +2,170 @@
 <java version="21.0.3" class="java.beans.XMLDecoder">
  <object class="java.util.HashMap">
   <void method="put">
+   <string>Red</string>
+   <object class="java.util.HashMap">
+    <void method="put">
+     <string>number</string>
+     <object class="java.awt.Color">
+      <int>199</int>
+      <int>198</int>
+      <int>186</int>
+      <int>255</int>
+     </object>
+    </void>
+    <void method="put">
+     <string>background</string>
+     <object class="java.awt.Color">
+      <int>218</int>
+      <int>213</int>
+      <int>202</int>
+      <int>255</int>
+     </object>
+    </void>
+    <void method="put">
+     <string>equals</string>
+     <object class="java.awt.Color">
+      <int>230</int>
+      <int>55</int>
+      <int>50</int>
+      <int>255</int>
+     </object>
+    </void>
+    <void method="put">
+     <string>operator</string>
+     <object class="java.awt.Color">
+      <int>122</int>
+      <int>121</int>
+      <int>118</int>
+      <int>255</int>
+     </object>
+    </void>
+   </object>
+  </void>
+  <void method="put">
+   <string>White</string>
+   <object class="java.util.HashMap">
+    <void method="put">
+     <string>number</string>
+     <object class="java.awt.Color">
+      <int>245</int>
+      <int>245</int>
+      <int>245</int>
+      <int>255</int>
+     </object>
+    </void>
+    <void method="put">
+     <string>background</string>
+     <object class="java.awt.Color">
+      <int>245</int>
+      <int>245</int>
+      <int>245</int>
+      <int>255</int>
+     </object>
+    </void>
+    <void method="put">
+     <string>equals</string>
+     <object class="java.awt.Color">
+      <int>0</int>
+      <int>145</int>
+      <int>160</int>
+      <int>255</int>
+     </object>
+    </void>
+    <void method="put">
+     <string>operator</string>
+     <object class="java.awt.Color">
+      <int>230</int>
+      <int>230</int>
+      <int>230</int>
+      <int>255</int>
+     </object>
+    </void>
+   </object>
+  </void>
+  <void method="put">
+   <string>Bright Orange</string>
+   <object class="java.util.HashMap">
+    <void method="put">
+     <string>number</string>
+     <object class="java.awt.Color">
+      <int>29</int>
+      <int>29</int>
+      <int>29</int>
+      <int>255</int>
+     </object>
+    </void>
+    <void method="put">
+     <string>background</string>
+     <object class="java.awt.Color">
+      <int>12</int>
+      <int>12</int>
+      <int>12</int>
+      <int>255</int>
+     </object>
+    </void>
+    <void method="put">
+     <string>equals</string>
+     <object class="java.awt.Color">
+      <int>245</int>
+      <int>72</int>
+      <int>0</int>
+      <int>255</int>
+     </object>
+    </void>
+    <void method="put">
+     <string>operator</string>
+     <object class="java.awt.Color">
+      <int>134</int>
+      <int>134</int>
+      <int>134</int>
+      <int>255</int>
+     </object>
+    </void>
+   </object>
+  </void>
+  <void method="put">
+   <string>Black, no Button Color</string>
+   <object class="java.util.HashMap">
+    <void method="put">
+     <string>number</string>
+     <object class="java.awt.Color">
+      <int>26</int>
+      <int>26</int>
+      <int>26</int>
+      <int>255</int>
+     </object>
+    </void>
+    <void method="put">
+     <string>background</string>
+     <object class="java.awt.Color">
+      <int>26</int>
+      <int>26</int>
+      <int>26</int>
+      <int>255</int>
+     </object>
+    </void>
+    <void method="put">
+     <string>equals</string>
+     <object class="java.awt.Color">
+      <int>245</int>
+      <int>59</int>
+      <int>49</int>
+      <int>255</int>
+     </object>
+    </void>
+    <void method="put">
+     <string>operator</string>
+     <object class="java.awt.Color">
+      <int>26</int>
+      <int>26</int>
+      <int>26</int>
+      <int>255</int>
+     </object>
+    </void>
+   </object>
+  </void>
+  <void method="put">
    <string>Default</string>
    <object class="java.util.HashMap">
     <void method="put">
