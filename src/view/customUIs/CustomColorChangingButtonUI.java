@@ -1,4 +1,4 @@
-package view;
+package view.customUIs;
 
 import config.Config;
 
@@ -7,7 +7,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicButtonUI;
 import java.awt.*;
 
-class CustomColorChangingButtonUI extends BasicButtonUI {
+public class CustomColorChangingButtonUI extends BasicButtonUI {
     private Color buttonColor;
 
     public CustomColorChangingButtonUI() {

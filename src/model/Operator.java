@@ -1,5 +1,8 @@
 package model;
 
+/**
+ * Enum representing various mathematical operators used in the calculator application.
+ */
 public enum Operator {
     PLUS,
     MINUS,

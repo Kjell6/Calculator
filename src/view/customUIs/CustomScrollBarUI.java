@@ -1,4 +1,4 @@
-package view;
+package view.customUIs;
 
 import config.Config;
 
@@ -6,7 +6,7 @@ import javax.swing.*;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import java.awt.*;
 
-class CustomScrollBarUI extends BasicScrollBarUI {
+public class CustomScrollBarUI extends BasicScrollBarUI {
     @Override
     protected void configureScrollBarColors() {
         this.thumbColor = Config.OPERATOR_COLOR; // Farbe des Scrollbalkens

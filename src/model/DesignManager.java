@@ -11,20 +11,38 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The DesignManager class handles the storage and management of color designs
+ * for the calculator application. It allows saving, retrieving, and deleting
+ * designs in XML format.
+ */
 public class DesignManager {
-    private static final Map<String, Map<String, Color>> designs = getPermDesigns();
+    private static final Map<String, Map<String, Color>> designs = loadSavedDesigns();
 
-    public static void saveTempDesign(String name, Color background, Color number, Color operator, Color equals) {
+    /**
+     * Adds a design with the specified colors for background,
+     * number, operator, and equals button to the designs.
+     *
+     * @param name      the name of the design to save
+     * @param background the color for the background
+     * @param number    the color for the number buttons
+     * @param operator  the color for the operator buttons
+     * @param equals    the color for the equals button
+     */
+    public static void addCurrentDesign(String name, Color background, Color number, Color operator, Color equals) {
         Map<String, Color> design = new HashMap<>();
         design.put("background", background);
         design.put("number", number);
         design.put("operator", operator);
         design.put("equals", equals);
         designs.put(name, design);
-        savePermDesign();
+        saveDesignsToFile();
     }
 
-    private static void savePermDesign() {
+    /**
+     * Saves the current designs to an XML file.
+     */
+    private static void saveDesignsToFile() {
         //Save in XML File
         try (FileOutputStream fos = new FileOutputStream(Config.FILENAME);
              XMLEncoder encoder = new XMLEncoder(fos)) {
@@ -35,11 +53,22 @@ public class DesignManager {
         }
     }
 
-    public static Map<String, Color> getDesign(String name) {
-        return getPermDesigns().get(name);
+    /**
+     * Retrieves a design by its name.
+     *
+     * @param name the name of the design to retrieve
+     * @return a Map containing the colors for the specified design, or null if not found
+     */
+    public static Map<String, Color> getDesignByName(String name) {
+        return loadSavedDesigns().get(name);
     }
 
-    private static Map<String, Map<String, Color>> getPermDesigns() {
+    /**
+     * Loads and returns the saved designs from the XML file.
+     *
+     * @return a Map containing all saved designs
+     */
+    private static Map<String, Map<String, Color>> loadSavedDesigns() {
         Map<String, Map<String, Color>> result;
         try (FileInputStream fis = new FileInputStream(Config.FILENAME);
              XMLDecoder decoder = new XMLDecoder(fis)) {
@@ -51,14 +80,24 @@ public class DesignManager {
         }
     }
 
-    public static void deleteDesign(String name) {
+    /**
+     * Deletes a design by its name. The default design cannot be deleted.
+     *
+     * @param name the name of the design to delete
+     */
+    public static void deleteDesignByName(String name) {
         if (!name.equals("Default")) {
             designs.remove(name);
-            savePermDesign();
+            saveDesignsToFile();
         }
     }
 
-    public static String[] getDesignNames() {
-        return getPermDesigns().keySet().toArray(new String[0]);
+    /**
+     * Retrieves the names of all saved designs.
+     *
+     * @return an array of design names
+     */
+    public static String[] getAllDesignNames() {
+        return loadSavedDesigns().keySet().toArray(new String[0]);
     }
 }

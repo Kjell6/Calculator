@@ -1,4 +1,4 @@
-package view;
+package view.customUIs;
 
 import config.Config;
 import javax.swing.*;

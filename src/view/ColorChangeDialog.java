@@ -3,16 +3,29 @@ package view;
 import config.Config;
 import model.Logic;
 import model.DesignManager;
+import view.customUIs.CustomColorChangingButtonUI;
+import view.customUIs.CustomComboBoxUI;
+
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.Map;
 
+/**
+ * The ColorChangeDialog class represents a dialog that allows users to change
+ * the colors of various components in the calculator application, save designs,
+ * and load existing designs.
+ */
 public class ColorChangeDialog extends JDialog {
     private final JFrame parentFrame;
     private final Logic logic;
     private final JComboBox<String> designComboBox;
 
+    /**
+     * Constructs a ColorChangeDialog with the specified parent frame and logic.
+     *
+     * @param frame the parent JFrame that the dialog is centered on
+     * @param log   the Logic instance used for calculations
+     */
     public ColorChangeDialog(JFrame frame, Logic log) {
         this.parentFrame = frame;
         this.logic = log;
@@ -34,7 +47,7 @@ public class ColorChangeDialog extends JDialog {
         JButton saveButton = new JButton("Save Design");
         JButton deleteButton = new JButton("Delete Design");
 
-        designComboBox = new JComboBox<>(DesignManager.getDesignNames());
+        designComboBox = new JComboBox<>(DesignManager.getAllDesignNames());
         designComboBox.setUI(new CustomComboBoxUI());
 
         //Update Button
@@ -49,6 +62,7 @@ public class ColorChangeDialog extends JDialog {
         saveButton.setUI(ui);
         deleteButton.setUI(ui);
 
+        //Add Listeners
         changeBackgroundColorButton.addActionListener(e -> {
             Color newColor = JColorChooser.showDialog(ColorChangeDialog.this, "Choose Background Color", Config.BACKGROUND);
             if (newColor != null) {
@@ -80,7 +94,7 @@ public class ColorChangeDialog extends JDialog {
         saveButton.addActionListener(e -> {
             String name = JOptionPane.showInputDialog(this, "Enter design name:");
             if (name != null && !name.trim().isEmpty()) {
-                DesignManager.saveTempDesign(name, Config.BACKGROUND, Config.BUTTON_COLOR, Config.OPERATOR_COLOR, Config.EQUAL_COLOR);
+                DesignManager.addCurrentDesign(name, Config.BACKGROUND, Config.BUTTON_COLOR, Config.OPERATOR_COLOR, Config.EQUAL_COLOR);
                 updateDesignComboBox();
             }
         });
@@ -88,7 +102,7 @@ public class ColorChangeDialog extends JDialog {
         designComboBox.addActionListener(e -> {
             String selectedDesign = (String) designComboBox.getSelectedItem();
             if (selectedDesign != null) {
-                Map<String, Color> design = DesignManager.getDesign(selectedDesign);
+                Map<String, Color> design = DesignManager.getDesignByName(selectedDesign);
                 if (design != null) {
                     Config.CHANGE_BACKGROUND(design.get("background"));
                     Config.CHANGE_BUTTON_COLOR(design.get("number"));
@@ -101,7 +115,7 @@ public class ColorChangeDialog extends JDialog {
         deleteButton.addActionListener(e -> {
             String selectedDesign = (String) designComboBox.getSelectedItem();
             if (selectedDesign != null) {
-                DesignManager.deleteDesign(selectedDesign);
+                DesignManager.deleteDesignByName(selectedDesign);
                 updateDesignComboBox();
             }
         });
@@ -113,22 +127,23 @@ public class ColorChangeDialog extends JDialog {
             view.changeAdvancedMode();
         });
 
+        //Adds Color Buttons to Button Panel
         colorButtons.add(changeBackgroundColorButton);
         colorButtons.add(changeForegroundColorButton);
         colorButtons.add(changeButtonColorButton);
         colorButtons.add(changeEqualsColorButton);
         colorButtons.setBackground(Config.BACKGROUND);
 
+        //Adds Design Buttons to Design Panel
         designButtons.add(saveButton);
         designButtons.add(deleteButton);
         designButtons.setBackground(Config.BACKGROUND);
-
-
 
         // Add components using GridBagLayout
         gbc.fill = GridBagConstraints.BOTH;
         gbc.insets = new Insets(5, 5, 5, 5);
 
+        //Adds Panels to Dialog
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 1;
@@ -149,7 +164,10 @@ public class ColorChangeDialog extends JDialog {
         setVisible(true);
     }
 
+    /**
+     * Updates the design ComboBox to reflect the current saved designs.
+     */
     private void updateDesignComboBox() {
-        designComboBox.setModel(new DefaultComboBoxModel<>(DesignManager.getDesignNames()));
+        designComboBox.setModel(new DefaultComboBoxModel<>(DesignManager.getAllDesignNames()));
     }
 }
