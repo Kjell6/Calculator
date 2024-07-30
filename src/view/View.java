@@ -16,10 +16,6 @@ import javax.swing.text.StyledDocument;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-/**
- * The View class represents the graphical user interface of the calculator application.
- * It handles user interactions and updates the display based on the logic provided.
- */
 public class View extends JFrame implements ICalculatorInterface {
     //Number Buttons
     private JButton a1Button, a2Button, a3Button, a4Button, a5Button,
@@ -40,21 +36,49 @@ public class View extends JFrame implements ICalculatorInterface {
     private final Logic logic;
     private boolean advancedModeEnabled = false;
 
-    /**
-     * Constructs a View object with the specified Logic object.
-     * Initializes components and sets up the user interface.
-     *
-     * @param l the Logic object that handles calculator operations
-     */
+
     public View(Logic l) {
         this.logic = l;
         logic.subscribe(this);
 
         initializeComponents();
 
-        // initialize Main panel with BorderLayout
+        // Main panel with BorderLayout
         JPanel mainPanel = new JPanel(new BorderLayout());
-        mainPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+        // Display at the top
+        display = new JTextPane();
+        display.setEditable(false);
+        display.setBackground(Config.BACKGROUND);
+        //Changes Text color depending on the Brightness of the Background
+        float[] hsbWerte = Color.RGBtoHSB(Config.BACKGROUND.getRed(), Config.BACKGROUND.getGreen(), Config.BACKGROUND.getBlue(), null);
+        float brightness = hsbWerte[2];
+        if (brightness < 0.5f) {
+            display.setForeground(Color.WHITE);
+        } else {
+            display.setForeground(Color.BLACK);
+        }
+        display.setFont(new Font("Helvetica", Font.PLAIN, 60));
+        display.setPreferredSize(new Dimension(300, 61));
+        display.setText("0"); // Set initial text
+
+        // Text-Alignment
+        StyledDocument doc = display.getStyledDocument();
+        SimpleAttributeSet rightAlign = new SimpleAttributeSet();
+        StyleConstants.setAlignment(rightAlign, StyleConstants.ALIGN_RIGHT);
+        doc.setParagraphAttributes(0, doc.getLength(), rightAlign, false);
+
+        //Add horizontal Scrollbar
+        JScrollPane scrollPane = new JScrollPane(display);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        scrollPane.setBackground(Config.BACKGROUND);
+        scrollPane.setBorder(null);
+        scrollPane.setViewportBorder(null);
+        // Custom Scrollbar
+        JScrollBar horizontalScrollBar = scrollPane.getHorizontalScrollBar();
+        horizontalScrollBar.setUI(new CustomScrollBarUI());
+        mainPanel.add(scrollPane, BorderLayout.NORTH);
 
         // Button panel with GridBagLayout
         JPanel buttonPanel = new JPanel(new GridBagLayout());
@@ -64,9 +88,10 @@ public class View extends JFrame implements ICalculatorInterface {
         gbc.weightx = 1;
         gbc.weighty = 1;
 
-        //Adding Button to buttonPanel
+        mainPanel.add(advancedModeSwitch, BorderLayout.SOUTH);
         addButton(buttonPanel, power, 0, 0, gbc);
         addButton(buttonPanel, colorSwitch, 1, 0, gbc);
+        //addButton(buttonPanel, advancedModeSwitch, 1, 0, gbc);
         addButton(buttonPanel, clear, 2, 0, gbc);
         addButton(buttonPanel, negPos, 3, 0, gbc);
         addButton(buttonPanel, delete, 4, 0, gbc);
@@ -84,7 +109,7 @@ public class View extends JFrame implements ICalculatorInterface {
         addButton(buttonPanel, a4Button, 2, 2, gbc);
         addButton(buttonPanel, a5Button, 3, 2, gbc);
         addButton(buttonPanel, a6Button, 4, 2, gbc);
-        addButton(buttonPanel, minus, 5, 2, gbc);
+        addButton(buttonPanel, minus, 5,2, gbc);
 
         addButton(buttonPanel, reciprocal, 0, 3, gbc);
         addButton(buttonPanel, tan, 1, 3, gbc);
@@ -100,13 +125,11 @@ public class View extends JFrame implements ICalculatorInterface {
         addButton(buttonPanel, buttonComma, 4, 4, gbc);
         addButton(buttonPanel, equals, 5, 4, gbc);
 
-        //Adds components to mainPanel and the mainPanel to the Frame
-        mainPanel.add(initializeDisplay(), BorderLayout.NORTH);
-        mainPanel.add(advancedModeSwitch, BorderLayout.SOUTH);
+        //Frame Properties
         mainPanel.add(buttonPanel, BorderLayout.CENTER);
+        mainPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
         add(mainPanel);
 
-        // Configure JFrame
         setContentPane(mainPanel);
         setTitle("Calculator");
         setSize(360, 400); //height will be: (height / 6) * 4
@@ -114,9 +137,20 @@ public class View extends JFrame implements ICalculatorInterface {
         setLocationRelativeTo(null);
         setResizable(false);
         getContentPane().setBackground(Config.BACKGROUND);
+        ImageIcon icon = new ImageIcon("src/assets/Icon-512.png");
+        setIconImage(icon.getImage());
 
-        //create buttonUI Object
+        //adding Button Lisener and UI
         buttonUI = new CustomButtonUI();
+
+        advancedModeSwitch.setUI(buttonUI);
+        advancedModeSwitch.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                super.mousePressed(e);
+                changeAdvancedMode();
+            }
+        });
 
         //Adds Listeners to the number Buttons
         addNumberListener(a1Button, 1);
@@ -145,16 +179,6 @@ public class View extends JFrame implements ICalculatorInterface {
         addOperatorListener(reciprocal, Operator.RECOPROCAL);
         addOperatorListener(logarithm, Operator.LOGARITHM);
         addOperatorListener(modulo, Operator.MODULO);
-
-        //Adds Listeners to the special buttons
-        advancedModeSwitch.setUI(buttonUI);
-        advancedModeSwitch.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                super.mousePressed(e);
-                changeAdvancedMode();
-            }
-        });
 
         colorSwitch.setUI(operatorButtonsUI);
         colorSwitch.addMouseListener(new MouseAdapter() {
@@ -206,36 +230,45 @@ public class View extends JFrame implements ICalculatorInterface {
 
             }
         });
-
-        //
         updateAdvancedButtonsVisibility();
         setVisible(true);
         setFocusable(true);
     }
 
-
-    /**
-     * Displays the given number on the display.
-     *
-     * @param number the number to be displayed
-     */
     @Override
     public void displayNumberChange(String number) {
         display.setText(number);
         if (number.isEmpty()) display.setText("0");
     }
 
-    /**
-     * Clears the display, setting it to the default state 0.
-     */
     @Override
     public void displayNull() {
         display.setText("");
     }
 
-    /**
-     * Updates the size of the frame and the visibility of the advanced features
-     */
+    private void addNumberListener(JButton button, int number) {
+        button.setUI(buttonUI);
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                super.mousePressed(e);
+                logic.numberInput(number);
+            }
+        });
+    }
+
+    private void addOperatorListener(JButton button, Operator op) {
+        button.setUI(operatorButtonsUI);
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                super.mousePressed(e);
+                logic.setOperator(op);
+
+            }
+        });
+    }
+
     private void updateAdvancedButtonsVisibility() {
         int w = getWidth();
         int h = getHeight();
@@ -256,96 +289,11 @@ public class View extends JFrame implements ICalculatorInterface {
         colorSwitch.setVisible(advancedModeEnabled);
     }
 
-    /**
-     * changes the Advanced Mode state to the opposite
-     */
     public void changeAdvancedMode() {
         advancedModeEnabled = !advancedModeEnabled;
         updateAdvancedButtonsVisibility();
     }
 
-    /**
-     * adds a Listener to the given Button
-     *
-     * @param button the JButton to which the listener is added
-     * @param number the number that will be passed to the logic when the button is pressed
-     */
-    private void addNumberListener(JButton button, int number) {
-        button.setUI(buttonUI);
-        button.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                super.mousePressed(e);
-                logic.numberInput(number);
-            }
-        });
-    }
-
-    /**
-     * adds a Listener to the given Button
-     *
-     * @param button the JButton to which the listener is added
-     * @param op     the operator that will be passed to the logic when the button is pressed
-     */
-    private void addOperatorListener(JButton button, Operator op) {
-        button.setUI(operatorButtonsUI);
-        button.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                super.mousePressed(e);
-                logic.setOperator(op);
-
-            }
-        });
-    }
-
-    /**
-     * creates Display for displaying the numbers with right text Alignment and Scrollbar.
-     *
-     * @return created Display
-     */
-    private JScrollBar initializeDisplay() {
-        // Display at the top
-        display = new JTextPane();
-        display.setEditable(false);
-        display.setBackground(Config.BACKGROUND);
-
-        //Changes Text color depending on the Brightness of the Background
-        float[] hsbWerte = Color.RGBtoHSB(Config.BACKGROUND.getRed(), Config.BACKGROUND.getGreen(), Config.BACKGROUND.getBlue(), null);
-        float brightness = hsbWerte[2];
-        if (brightness < 0.5f) {
-            display.setForeground(Color.WHITE);
-        } else {
-            display.setForeground(Color.BLACK);
-        }
-
-        display.setFont(new Font("Helvetica", Font.PLAIN, 60));
-        display.setPreferredSize(new Dimension(300, 61));
-        display.setText("0"); // Set initial text
-        logic.updateDisplay();
-
-        // Text-Alignment
-        StyledDocument doc = display.getStyledDocument();
-        SimpleAttributeSet rightAlign = new SimpleAttributeSet();
-        StyleConstants.setAlignment(rightAlign, StyleConstants.ALIGN_RIGHT);
-        doc.setParagraphAttributes(0, doc.getLength(), rightAlign, false);
-
-        //Add horizontal Scrollbar
-        JScrollPane scrollPane = new JScrollPane(display);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
-        scrollPane.setBackground(Config.BACKGROUND);
-        scrollPane.setBorder(null);
-        scrollPane.setViewportBorder(null);
-        // Custom Scrollbar
-        JScrollBar horizontalScrollBar = scrollPane.getHorizontalScrollBar();
-        horizontalScrollBar.setUI(new CustomScrollBarUI());
-        return horizontalScrollBar;
-    }
-
-    /**
-     * initializes every Button
-     */
     private void initializeComponents() {
         colorSwitch = new JButton("\uD83C\uDFA8");
         advancedModeSwitch = new JButton("fx");
@@ -404,15 +352,10 @@ public class View extends JFrame implements ICalculatorInterface {
         setUniformSize(reciprocal);
         logarithm = new JButton("log₁₀");
         setUniformSize(logarithm);
-        modulo = new JButton("%");
+        modulo= new JButton("%");
         setUniformSize(modulo);
     }
 
-    /**
-     * sets the given button to the Uniform size of 60x60
-     *
-     * @param button the button which size will be set
-     */
     private void setUniformSize(AbstractButton button) {
         Dimension buttonSize = new Dimension(60, 60); // Passen Sie die Größe nach Bedarf an
         button.setPreferredSize(buttonSize);
@@ -423,15 +366,6 @@ public class View extends JFrame implements ICalculatorInterface {
         button.setVerticalAlignment(SwingConstants.CENTER);
     }
 
-    /**
-     * Adds a button to the specified panel at the given grid position.
-     *
-     * @param panel  the JPanel to which the button is added
-     * @param button the button to be added to the panel
-     * @param x      the grid x position where the button will be placed
-     * @param y      the grid y position where the button will be placed
-     * @param gbc    the GridBagConstraints used to configure the button's position
-     */
     private void addButton(JPanel panel, AbstractButton button, int x, int y, GridBagConstraints gbc) {
         gbc.gridx = x;
         gbc.gridy = y;
