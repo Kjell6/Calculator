@@ -15,7 +15,7 @@ import java.util.Map;
  * the colors of various components in the calculator application, save designs,
  * and load existing designs.
  */
-public class ColorChangeDialog extends JDialog {
+public class DesignChangeDialog extends JDialog {
     private final JFrame parentFrame;
     private final Logic logic;
     private final JComboBox<String> designComboBox;
@@ -26,7 +26,7 @@ public class ColorChangeDialog extends JDialog {
      * @param frame the parent JFrame that the dialog is centered on
      * @param log   the Logic instance used for calculations
      */
-    public ColorChangeDialog(JFrame frame, Logic log) {
+    public DesignChangeDialog(JFrame frame, Logic log) {
         this.parentFrame = frame;
         this.logic = log;
         setTitle("Change Colors");
@@ -64,28 +64,28 @@ public class ColorChangeDialog extends JDialog {
 
         //Add Listeners
         changeBackgroundColorButton.addActionListener(e -> {
-            Color newColor = JColorChooser.showDialog(ColorChangeDialog.this, "Choose Background Color", Config.BACKGROUND);
+            Color newColor = JColorChooser.showDialog(DesignChangeDialog.this, "Choose Background Color", Config.BACKGROUND);
             if (newColor != null) {
                 Config.CHANGE_BACKGROUND(newColor);
             }
         });
 
         changeForegroundColorButton.addActionListener(e -> {
-            Color newColor = JColorChooser.showDialog(ColorChangeDialog.this, "Choose Button Color", Config.BUTTON_COLOR);
+            Color newColor = JColorChooser.showDialog(DesignChangeDialog.this, "Choose Button Color", Config.BUTTON_COLOR);
             if (newColor != null) {
                 Config.CHANGE_BUTTON_COLOR(newColor);
             }
         });
 
         changeButtonColorButton.addActionListener(e -> {
-            Color newColor = JColorChooser.showDialog(ColorChangeDialog.this, "Choose Operator Color", Config.OPERATOR_COLOR);
+            Color newColor = JColorChooser.showDialog(DesignChangeDialog.this, "Choose Operator Color", Config.OPERATOR_COLOR);
             if (newColor != null) {
                 Config.CHANGE_OPERATOR_COLOR(newColor);
             }
         });
 
         changeEqualsColorButton.addActionListener(e -> {
-            Color newColor = JColorChooser.showDialog(ColorChangeDialog.this, "Choose Equals Color", Config.EQUAL_COLOR);
+            Color newColor = JColorChooser.showDialog(DesignChangeDialog.this, "Choose Equals Color", Config.EQUAL_COLOR);
             if (newColor != null) {
                 Config.CHANGE_EQUAL_COLOR(newColor);
             }
@@ -102,13 +102,7 @@ public class ColorChangeDialog extends JDialog {
         designComboBox.addActionListener(e -> {
             String selectedDesign = (String) designComboBox.getSelectedItem();
             if (selectedDesign != null) {
-                Map<String, Color> design = DesignManager.getDesignByName(selectedDesign);
-                if (design != null) {
-                    Config.CHANGE_BACKGROUND(design.get("background"));
-                    Config.CHANGE_BUTTON_COLOR(design.get("number"));
-                    Config.CHANGE_OPERATOR_COLOR(design.get("operator"));
-                    Config.CHANGE_EQUAL_COLOR(design.get("equals"));
-                }
+                DesignManager.changeActiveDesign(selectedDesign);
             }
         });
 
@@ -120,6 +114,7 @@ public class ColorChangeDialog extends JDialog {
             }
         });
 
+        // Updates the current Design
         updateButton.addActionListener(e -> {
             dispose();
             parentFrame.dispose();

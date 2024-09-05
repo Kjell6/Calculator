@@ -13,7 +13,8 @@ public class Config {
     public static Color OPERATOR_COLOR = new Color(165, 165, 165);
     public static Color BACKGROUND =  new Color(61, 63, 60);
 
-    public static String FILENAME = "designs.xml";
+    public static String DESIGNGALLERY = "designs.xml";
+    public static String ACTIVEDESIGN = "CurrentDesigns.xml";
 
     /**
      * Changes the default button color to the specified color.

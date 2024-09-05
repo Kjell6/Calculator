@@ -1,6 +1,7 @@
 package view;
 
 import config.Config;
+import model.DesignManager;
 import model.ICalculatorInterface;
 import model.Logic;
 import model.Operator;
@@ -40,6 +41,9 @@ public class View extends JFrame implements ICalculatorInterface {
     public View(Logic l) {
         this.logic = l;
         logic.subscribe(this);
+
+        // Set the current to the last used
+        DesignManager.changeActiveDesign(DesignManager.getActiveDesign());
 
         initializeComponents();
 
@@ -185,7 +189,7 @@ public class View extends JFrame implements ICalculatorInterface {
             @Override
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
-                new ColorChangeDialog(View.this, logic);
+                new DesignChangeDialog(View.this, logic);
             }
         });
 
