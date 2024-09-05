@@ -36,12 +36,8 @@ public class Logic {
      */
     public void numberInput(int number) {
         displayNum += number;
-        if (operator == Operator.NONE) {
-            number1 = Float.parseFloat(displayNum);
-        } else {
-            number2 = Float.parseFloat(displayNum);
-        }
-         publishDisplayChange(displayNum);
+        changeActiveNumber(Float.parseFloat(displayNum));
+        publishDisplayChange();
     }
 
     /**
@@ -68,7 +64,7 @@ public class Logic {
         if (displayNum.isEmpty()) displayNum = "0";
         if (!displayNum.contains(".")) {
             displayNum += ".";
-            publishDisplayChange(displayNum);
+            publishDisplayChange();
         }
     }
 
@@ -80,7 +76,7 @@ public class Logic {
         number2 = 0;
         operator = Operator.NONE;
         displayNum = "";
-        publishDisplayChange(displayNum);
+        publishDisplayChange();
     }
 
     /**
@@ -92,13 +88,8 @@ public class Logic {
         } else {
             displayNum = displayNum.substring(0, displayNum.length() - 1);
         }
-        float numberToUpdate = displayNum.isEmpty() ? 0 : Float.parseFloat(displayNum);
-        if (operator == Operator.NONE) {
-            number1 = numberToUpdate;
-        } else {
-            number2 = numberToUpdate;
-        }
-        publishDisplayChange(displayNum);
+        changeActiveNumber(displayNum.isEmpty() ? 0 : Float.parseFloat(displayNum));
+        publishDisplayChange();
     }
 
     /**
@@ -107,21 +98,11 @@ public class Logic {
     public void switchSign() {
         if (!displayNum.isEmpty()) {
             displayNum = (displayNum.charAt(0) == '-') ? displayNum.substring(1) : "-" + displayNum;
-            if (operator == Operator.NONE) {
-                number1 = Float.parseFloat(displayNum);
-            } else {
-                number2 = Float.parseFloat(displayNum);
-            }
-            publishDisplayChange(displayNum);
+            changeActiveNumber(Float.parseFloat(displayNum));
+            publishDisplayChange();
         }
     }
 
-    /**
-     * Updates the display with the current value of displayNum.
-     */
-    public void updateDisplay() {
-        publishDisplayChange(displayNum);
-    }
 
     /**
      * Calculates the result based on the current operator and updates
@@ -145,13 +126,15 @@ public class Logic {
             case Operator.LOGARITHM -> (float) Math.log10(number1);
             case Operator.MODULO -> number1 % number2;
         };
+        // Remove trailing zeros and decimal point if result is a whole number
         displayNum = (result + "").replaceAll("0*$", "").replaceAll("\\.$", "");
+
         if (displayNum.contains("Infinity")) {
             displayNum = "";
             number1 = 0;
             publishDisplayChange("Nicht möglich");
         } else {
-            publishDisplayChange(displayNum);
+            publishDisplayChange();
             number1 = Float.parseFloat(displayNum);
         }
         if (displayNum.equals("0")) displayNum = "";
@@ -169,6 +152,19 @@ public class Logic {
         return op == Operator.SQRT || op == Operator.SIN || op == Operator.COS
                 || op == Operator.TAN || op == Operator.FACULTY || op == Operator.RECOPROCAL
                 || op == Operator.LOGARITHM;
+    }
+
+    /**
+     * changes the active number to the given number
+     *
+     * @param number the number, that will be the active one
+     */
+    private void changeActiveNumber(float number) {
+        if (operator == Operator.NONE) {
+            number1 = number;
+        } else {
+            number2 = number;
+        }
     }
 
     /**
@@ -199,6 +195,15 @@ public class Logic {
      */
     public void unsubscribe(ICalculatorInterface listener) {
         subscribers.remove(listener);
+    }
+
+    /**
+     * Notifies all subscribed listeners of a display number change.
+     */
+    private void publishDisplayChange() {
+        for (ICalculatorInterface listener : subscribers) {
+            listener.displayNumberChange(displayNum);
+        }
     }
 
     /**

@@ -62,8 +62,8 @@ public class View extends JFrame implements ICalculatorInterface {
         } else {
             display.setForeground(Color.BLACK);
         }
-        display.setFont(new Font("Helvetica", Font.PLAIN, 60));
-        display.setPreferredSize(new Dimension(300, 61));
+        display.setFont(new Font("Helvetica", Font.PLAIN, (Config.WIDTH / 6) - 1));
+        display.setPreferredSize(new Dimension(new Dimension(Config.WIDTH, Config.WIDTH / 6)));
         display.setText("0"); // Set initial text
 
         // Text-Alignment
@@ -92,10 +92,10 @@ public class View extends JFrame implements ICalculatorInterface {
         gbc.weightx = 1;
         gbc.weighty = 1;
 
+        //Adds all Buttons to the MainPanel, segmented by each row
         mainPanel.add(advancedModeSwitch, BorderLayout.SOUTH);
         addButton(buttonPanel, power, 0, 0, gbc);
         addButton(buttonPanel, colorSwitch, 1, 0, gbc);
-        //addButton(buttonPanel, advancedModeSwitch, 1, 0, gbc);
         addButton(buttonPanel, clear, 2, 0, gbc);
         addButton(buttonPanel, negPos, 3, 0, gbc);
         addButton(buttonPanel, delete, 4, 0, gbc);
@@ -129,14 +129,14 @@ public class View extends JFrame implements ICalculatorInterface {
         addButton(buttonPanel, buttonComma, 4, 4, gbc);
         addButton(buttonPanel, equals, 5, 4, gbc);
 
-        //Frame Properties
         mainPanel.add(buttonPanel, BorderLayout.CENTER);
         mainPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
         add(mainPanel);
 
+        //Frame properties
         setContentPane(mainPanel);
         setTitle("Calculator");
-        setSize(360, 400); //height will be: (height / 6) * 4
+        setSize(Config.WIDTH, Config.HEIGHT);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
@@ -144,7 +144,7 @@ public class View extends JFrame implements ICalculatorInterface {
         ImageIcon icon = new ImageIcon("src/assets/Icon-512.png");
         setIconImage(icon.getImage());
 
-        //adding Button Lisener and UI
+        //adding Button Liseners and UIs
         buttonUI = new CustomButtonUI();
 
         advancedModeSwitch.setUI(buttonUI);
@@ -274,12 +274,10 @@ public class View extends JFrame implements ICalculatorInterface {
     }
 
     private void updateAdvancedButtonsVisibility() {
-        int w = getWidth();
-        int h = getHeight();
         if (advancedModeEnabled) {
-            setSize((w / 4) * 6, h);
+            setSize(Config.WIDTH, Config.HEIGHT);
         } else {
-            setSize((w / 6) * 4, h);
+            setSize((Config.WIDTH * 2) / 3, Config.HEIGHT);
         }
         power.setVisible(advancedModeEnabled);
         sin.setVisible(advancedModeEnabled);
@@ -361,7 +359,8 @@ public class View extends JFrame implements ICalculatorInterface {
     }
 
     private void setUniformSize(AbstractButton button) {
-        Dimension buttonSize = new Dimension(60, 60); // Passen Sie die Größe nach Bedarf an
+        int size = Config.WIDTH / 6;
+        Dimension buttonSize = new Dimension(size, size); // Passen Sie die Größe nach Bedarf an
         button.setPreferredSize(buttonSize);
         button.setMinimumSize(buttonSize);
         button.setMaximumSize(buttonSize);

@@ -1,6 +1,6 @@
 ### IntelliJ IDEA ###
 out/
-CurrentDesigns.xml
+ActiveDesign.xml
 !**/src/main/**/out/
 !**/src/test/**/out/
 

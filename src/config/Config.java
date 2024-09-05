@@ -7,6 +7,9 @@ import java.awt.*;
  * including color settings for buttons, background, and filenames for design persistence.
  */
 public class Config {
+    //Size of frame, the width ist the width of the expanded (advanced Mode) Frame
+    public static int WIDTH = 360; //Default is 360
+    public static int HEIGHT = WIDTH + WIDTH / 6;
 
     public static Color BUTTON_COLOR = new Color(51, 51, 51);
     public static Color EQUAL_COLOR = new Color(255, 159, 10);
@@ -14,7 +17,7 @@ public class Config {
     public static Color BACKGROUND =  new Color(61, 63, 60);
 
     public static String DESIGNGALLERY = "designs.xml";
-    public static String ACTIVEDESIGN = "CurrentDesigns.xml";
+    public static String ACTIVEDESIGN = "ActiveDesign.xml";
 
     /**
      * Changes the default button color to the specified color.

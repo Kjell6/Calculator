@@ -17,7 +17,6 @@ import java.util.Map;
  * designs in XML format.
  */
 public class DesignManager {
-    private static final Map<String, Map<String, Color>> designs = loadSavedDesigns(Config.DESIGNGALLERY);
 
     /**
      * Adds a design with the specified colors for background,
@@ -30,26 +29,40 @@ public class DesignManager {
      * @param equals    the color for the equals button
      */
     public static void addCurrentDesign(String name, Color background, Color number, Color operator, Color equals) {
+        Map<String, Map<String, Color>> designs = loadSavedDesigns(Config.DESIGNGALLERY);
         Map<String, Color> design = new HashMap<>();
         design.put("background", background);
         design.put("number", number);
         design.put("operator", operator);
         design.put("equals", equals);
         designs.put(name, design);
-        saveDesignsToFile(Config.DESIGNGALLERY);
+        saveDesignsToFile(Config.DESIGNGALLERY, designs);
     }
 
     /**
      * Saves the current designs to an XML file.
      */
-    private static void saveDesignsToFile(String file) {
+    private static void saveDesignsToFile(String file, Map<String, Map<String, Color>> ddesigns) {
         //Save in XML File
         try (FileOutputStream fos = new FileOutputStream(file);
              XMLEncoder encoder = new XMLEncoder(fos)) {
-            encoder.writeObject(designs);
+            encoder.writeObject(ddesigns);
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("fail saving");
+        }
+    }
+
+    /**
+     * Deletes a design by its name. The default design cannot be deleted.
+     *
+     * @param name the name of the design to delete
+     */
+    public static void deleteDesignByName(String name) {
+        Map<String, Map<String, Color>> designs = loadSavedDesigns(Config.DESIGNGALLERY);
+        if (!name.equals("Default")) {
+            designs.remove(name);
+            saveDesignsToFile(Config.DESIGNGALLERY, designs);
         }
     }
 
@@ -69,15 +82,21 @@ public class DesignManager {
      * @return a Map containing all saved designs
      */
     private static Map<String, Map<String, Color>> loadSavedDesigns(String file) {
-        Map<String, Map<String, Color>> result;
         try (FileInputStream fis = new FileInputStream(file);
              XMLDecoder decoder = new XMLDecoder(fis)) {
-            result = (Map<String, Map<String, Color>>) decoder.readObject();
-            return result;
+            return (Map<String, Map<String, Color>>) decoder.readObject();
         } catch (IOException | ClassCastException e) {
-            System.out.println("fail");
-            return new HashMap<String, Map<String, Color>>();
+            return new HashMap<>();
         }
+    }
+
+    /**
+     * Retrieves the names of all saved designs.
+     *
+     * @return an array of design names
+     */
+    public static String[] getAllDesignNames() {
+        return loadSavedDesigns(Config.DESIGNGALLERY).keySet().toArray(new String[0]);
     }
 
     /**
@@ -101,40 +120,16 @@ public class DesignManager {
             encoder.writeObject(name);
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("fail saving");
         }
     }
 
     public static String getActiveDesign() {
-        String result;
         try (FileInputStream fis = new FileInputStream(Config.ACTIVEDESIGN);
              XMLDecoder decoder = new XMLDecoder(fis)) {
-            result = (String) decoder.readObject();
-            return result;
+            return (String) decoder.readObject();
         } catch (IOException | ClassCastException e) {
             System.out.println("fail");
             return"Default";
         }
-    }
-
-    /**
-     * Deletes a design by its name. The default design cannot be deleted.
-     *
-     * @param name the name of the design to delete
-     */
-    public static void deleteDesignByName(String name) {
-        if (!name.equals("Default")) {
-            designs.remove(name);
-            saveDesignsToFile(Config.DESIGNGALLERY);
-        }
-    }
-
-    /**
-     * Retrieves the names of all saved designs.
-     *
-     * @return an array of design names
-     */
-    public static String[] getAllDesignNames() {
-        return loadSavedDesigns(Config.DESIGNGALLERY).keySet().toArray(new String[0]);
     }
 }
