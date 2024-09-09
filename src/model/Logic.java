@@ -10,7 +10,7 @@ import java.util.List;
  * display changes.
  */
 public class Logic {
-    private String displayNum;
+    public String displayNum;
     private float number1;
     private float number2;
     Operator operator;
@@ -29,6 +29,37 @@ public class Logic {
     }
 
     /**
+     * Handles button presses by determining the action based on the button text.
+     *
+     * @param buttonText the text of the button that was pressed
+     */
+    public void buttonPressed(String buttonText) {
+        switch (buttonText) {
+            case "C" -> clear();
+            case "⌫" -> deleteChar();
+            case "=" -> result();
+            case "±" -> switchSign();
+            case "." -> addDecimalPoint();
+            case "xʸ" -> setOperator(Operator.POWER);
+            case "√" -> setOperator(Operator.SQRT);
+            case "sin" -> setOperator(Operator.SIN);
+            case "cos" -> setOperator(Operator.COS);
+            case "tan" -> setOperator(Operator.TAN);
+            case "x!" -> setOperator(Operator.FACULTY);
+            case "¹⁄ₓ" -> setOperator(Operator.RECOPROCAL);
+            case "log₁₀" -> setOperator(Operator.LOGARITHM);
+            case "%" -> setOperator(Operator.MODULO);
+            case "+" -> setOperator(Operator.PLUS);
+            case "-" -> setOperator(Operator.MINUS);
+            case "×" -> setOperator(Operator.MULTI);
+            case "÷" -> setOperator(Operator.DIVIDE);
+            case "🎨" -> publishDesignChange();
+            case "fx" -> publishAdvancedMode();
+            default -> numberInput(Integer.parseInt(buttonText));
+        }
+    }
+
+    /**
      * Handles number input by appending the number to the display number
      * and updating the corresponding operand based on the current operator.
      *
@@ -39,6 +70,7 @@ public class Logic {
         changeActiveNumber(Float.parseFloat(displayNum));
         publishDisplayChange();
     }
+
 
     /**
      * Sets the operator for the calculation and prepares the display
@@ -92,9 +124,7 @@ public class Logic {
         publishDisplayChange();
     }
 
-    /**
-     * Toggles the sign of the current display number.
-     */
+
     public void switchSign() {
         if (!displayNum.isEmpty()) {
             displayNum = (displayNum.charAt(0) == '-') ? displayNum.substring(1) : "-" + displayNum;
@@ -129,12 +159,11 @@ public class Logic {
         // Remove trailing zeros and decimal point if result is a whole number
         displayNum = (result + "").replaceAll("0*$", "").replaceAll("\\.$", "");
 
-        if (displayNum.contains("Infinity")) {
+        if (displayNum.contains("Infinity") || displayNum.contains("NaN")) {
             displayNum = "";
             number1 = 0;
-            publishDisplayChange("Nicht möglich");
+            publishDisplayChange("Error");
         } else {
-            publishDisplayChange();
             number1 = Float.parseFloat(displayNum);
         }
         if (displayNum.equals("0")) displayNum = "";
@@ -153,6 +182,7 @@ public class Logic {
                 || op == Operator.TAN || op == Operator.FACULTY || op == Operator.RECOPROCAL
                 || op == Operator.LOGARITHM;
     }
+
 
     /**
      * changes the active number to the given number
@@ -214,6 +244,18 @@ public class Logic {
     private void publishDisplayChange(String disp) {
         for (ICalculatorInterface listener : subscribers) {
             listener.displayNumberChange(disp);
+        }
+    }
+
+    private void publishDesignChange() {
+        for (ICalculatorInterface listener : subscribers) {
+            listener.designChangePress();
+        }
+    }
+
+    private void publishAdvancedMode() {
+        for (ICalculatorInterface listener : subscribers) {
+            listener.advancedModePress();
         }
     }
 

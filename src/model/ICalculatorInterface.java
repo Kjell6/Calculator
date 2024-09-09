@@ -13,4 +13,8 @@ public interface ICalculatorInterface {
      * Clears the display, setting it to the default state 0.
      */
     void displayNull();
+
+    void designChangePress();
+
+    void advancedModePress();
 }
