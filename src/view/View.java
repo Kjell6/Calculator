@@ -42,43 +42,15 @@ public class View extends JFrame implements ICalculatorInterface {
         logic.subscribe(this);
 
         // Sets the Design to the last used one
-        DesignManager.changeActiveDesign(DesignManager.getActiveDesign());
+        //DesignManager.changeActiveDesign(DesignManager.getActiveDesign());
 
         // Main panel with BorderLayout
         JPanel mainPanel = new JPanel(new BorderLayout());
 
         // Display at the top
-        display = new JTextPane();
-        display.setEditable(false);
-        display.setBackground(Config.BACKGROUND);
-        //Changes Text color depending on the Brightness of the Background
-        float[] hsbWerte = Color.RGBtoHSB(Config.BACKGROUND.getRed(), Config.BACKGROUND.getGreen(), Config.BACKGROUND.getBlue(), null);
-        float brightness = hsbWerte[2];
-        if (brightness < 0.5f) {
-            display.setForeground(Color.WHITE);
-        } else {
-            display.setForeground(Color.BLACK);
-        }
-        display.setFont(new Font("Helvetica", Font.PLAIN, (Config.WIDTH / 6) - 1));
-        display.setPreferredSize(new Dimension(new Dimension(Config.WIDTH, Config.WIDTH / 6)));
-        display.setText("0"); // Set initial text
-
-        // Text-Alignment
-        StyledDocument doc = display.getStyledDocument();
-        SimpleAttributeSet rightAlign = new SimpleAttributeSet();
-        StyleConstants.setAlignment(rightAlign, StyleConstants.ALIGN_RIGHT);
-        doc.setParagraphAttributes(0, doc.getLength(), rightAlign, false);
-
-        //Add horizontal Scrollbar
+        display = initializeDisplay();
         JScrollPane scrollPane = new JScrollPane(display);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
-        scrollPane.setBackground(Config.BACKGROUND);
-        scrollPane.setBorder(null);
-        scrollPane.setViewportBorder(null);
-        // Custom Scrollbar
-        JScrollBar horizontalScrollBar = scrollPane.getHorizontalScrollBar();
-        horizontalScrollBar.setUI(new CustomScrollBarUI());
+        initializeScrollPane(scrollPane);
         mainPanel.add(scrollPane, BorderLayout.NORTH);
 
         // Button panel with GridBagLayout
@@ -90,17 +62,17 @@ public class View extends JFrame implements ICalculatorInterface {
         gbc.weighty = 1;
 
         // Create UIs
-        buttonUI = new CustomButtonUI(Config.BUTTON_COLOR);
-        operatorButtonsUI = new CustomButtonUI(Config.OPERATOR_COLOR);
+        buttonUI = new CustomButtonUI(Config.BUTTON_COLOR, logic);
+        operatorButtonsUI = new CustomButtonUI(Config.OPERATOR_COLOR, logic);
 
-        // Add buttonTexts to the panel
+        // Create Buttons and adds them to the panel
         for (int i = 0; i < buttonTexts.length; i++) {
             for (int j = 0; j < buttonTexts[i].length; j++) {
                 JButton button = new JButton(buttonTexts[i][j]);
                 buttonsArray[i][j] = button;
 
-                addButton(buttonPanel, button, j, i, gbc);
-                addUI(button);
+                addButtonToPanel(buttonPanel, button, j, i, gbc);
+                addUItoButton(button);
                 setUniformSize(button);
 
                 button.addMouseListener(new MouseAdapter() {
@@ -133,27 +105,44 @@ public class View extends JFrame implements ICalculatorInterface {
         setFocusable(true);
     }
 
+    /**
+     * Displays the given number on the display.
+     *
+     * @param number the number to be displayed
+     */
     @Override
     public void displayNumberChange(String number) {
         display.setText(number);
         if (number.isEmpty()) display.setText("0");
     }
 
+    /**
+     * Clears the display, setting it to the default state 0.
+     */
     @Override
     public void displayNull() {
         display.setText("");
     }
 
+    /**
+     * Opens the design change dialog.
+     */
     @Override
     public void designChangePress() {
         new DesignChangeDialog(View.this, logic);
     }
 
+    /**
+     * Toggles the advanced mode.
+     */
     @Override
     public void advancedModePress() {
         changeAdvancedMode();
     }
 
+    /**
+     * Changes the size of the calculator to show or hide the advanced buttons.
+     */
     public void changeAdvancedMode() {
         advancedModeEnabled = !advancedModeEnabled;
         if (advancedModeEnabled) {
@@ -173,6 +162,11 @@ public class View extends JFrame implements ICalculatorInterface {
         }
     }
 
+    /**
+     * Sets the size of the button to a uniform size.
+     *
+     * @param button the button to set the size
+     */
     private void setUniformSize(AbstractButton button) {
         int size = Config.WIDTH / 6;
         Dimension buttonSize = new Dimension(size, size); // Passen Sie die Größe nach Bedarf an
@@ -184,15 +178,72 @@ public class View extends JFrame implements ICalculatorInterface {
         button.setVerticalAlignment(SwingConstants.CENTER);
     }
 
-    private void addUI(AbstractButton button) {
+    /**
+     * Adds the UI to the button.
+     *
+     * @param button the button to add the UI
+     */
+    private void addUItoButton(AbstractButton button) {
         switch (button.getText()) {
             case "C", "±", "⌫", "÷", "×", "-", "+" -> button.setUI(operatorButtonsUI);
-            case "=" -> button.setUI(new CustomButtonUI(Config.EQUAL_COLOR));
+            case "=" -> button.setUI(new CustomButtonUI(Config.EQUAL_COLOR, logic));
             default -> button.setUI(buttonUI);
         }
     }
 
-    private void addButton(JPanel panel, AbstractButton button, int x, int y, GridBagConstraints gbc) {
+    /**
+     * Initializes the display.
+     *
+     * @return the initialized display
+     */
+    private JTextPane initializeDisplay() {
+        JTextPane display = new JTextPane();
+        display.setEditable(false);
+        display.setBackground(Config.BACKGROUND);
+        display.setForeground(logic.getContrastingColor(Config.BACKGROUND));
+        display.setFont(new Font("Helvetica", Font.PLAIN, (Config.WIDTH / 6) - 1));
+        display.setPreferredSize(new Dimension(Config.WIDTH, Config.WIDTH / 6));
+        display.setText("0"); // Set initial text
+        alignDisplayTextRight(display);
+        return display;
+    }
+
+    /**
+     * Aligns the text in the display to the right.
+     *
+     * @param display the display to align
+     */
+    private void alignDisplayTextRight(JTextPane display) {
+        StyledDocument doc = display.getStyledDocument();
+        SimpleAttributeSet rightAlign = new SimpleAttributeSet();
+        StyleConstants.setAlignment(rightAlign, StyleConstants.ALIGN_RIGHT);
+        doc.setParagraphAttributes(0, doc.getLength(), rightAlign, false);
+    }
+
+    /**
+     * Initializes the scroll pane.
+     *
+     * @param scrollP the scroll pane to initialize
+     */
+    private void initializeScrollPane(JScrollPane scrollP) {
+        scrollP.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollP.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        scrollP.setBackground(Config.BACKGROUND);
+        scrollP.setBorder(null);
+        scrollP.setViewportBorder(null);
+        scrollP.getHorizontalScrollBar().setUI(new CustomScrollBarUI());
+    }
+
+    /**
+     * Adds a button to the panel.
+     *
+     * @param panel  the panel to add the button
+     * @param button the button to add
+     * @param x      the x position
+     * @param y      the y position
+     * @param gbc    the GridBagConstraints
+     */
+    private void addButtonToPanel(JPanel panel, AbstractButton button, int x, int y, GridBagConstraints gbc) {
         gbc.gridx = x;
         gbc.gridy = y;
         panel.add(button, gbc);

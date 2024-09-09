@@ -1,6 +1,7 @@
 package view.customUIs;
 
 import config.Config;
+import model.Logic;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -9,9 +10,11 @@ import java.awt.*;
 
 public class CustomColorChangingButtonUI extends BasicButtonUI {
     private Color buttonColor;
+    private Logic logic;
 
-    public CustomColorChangingButtonUI() {
+    public CustomColorChangingButtonUI(Logic l) {
         this.buttonColor = Config.OPERATOR_COLOR;
+        logic = l;
     }
 
     @Override
@@ -20,15 +23,7 @@ public class CustomColorChangingButtonUI extends BasicButtonUI {
         AbstractButton button = (AbstractButton) c;
         button.setOpaque(false);
         button.setBorder(new EmptyBorder(5, 15, 5, 15));
-        //Changes Text color depending on the Brightness of the Button
-        float[] hsbWerte = Color.RGBtoHSB(buttonColor.getRed(), buttonColor.getGreen(), buttonColor.getBlue(), null);
-        float brightness = hsbWerte[2];
-        if (brightness < 0.5f) {
-            button.setForeground(Color.WHITE);
-        } else {
-            button.setForeground(Color.BLACK);
-        }
-
+        button.setForeground(logic.getContrastingColor(buttonColor));
     }
 
     @Override

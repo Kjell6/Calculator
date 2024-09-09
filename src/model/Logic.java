@@ -1,5 +1,6 @@
 package model;
 
+import java.awt.*;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -11,8 +12,8 @@ import java.util.List;
  */
 public class Logic {
     public String displayNum;
-    private float number1;
-    private float number2;
+    private double number1;
+    private double number2;
     Operator operator;
     private final List<ICalculatorInterface> subscribers;
 
@@ -67,7 +68,7 @@ public class Logic {
      */
     public void numberInput(int number) {
         displayNum += number;
-        changeActiveNumber(Float.parseFloat(displayNum));
+        changeActiveNumber(Double.parseDouble(displayNum));
         publishDisplayChange();
     }
 
@@ -120,15 +121,18 @@ public class Logic {
         } else {
             displayNum = displayNum.substring(0, displayNum.length() - 1);
         }
-        changeActiveNumber(displayNum.isEmpty() ? 0 : Float.parseFloat(displayNum));
+        changeActiveNumber(displayNum.isEmpty() ? 0 : Double.parseDouble(displayNum));
         publishDisplayChange();
     }
 
 
+    /**
+     * Switches the sign of the current display number.
+     */
     public void switchSign() {
         if (!displayNum.isEmpty()) {
             displayNum = (displayNum.charAt(0) == '-') ? displayNum.substring(1) : "-" + displayNum;
-            changeActiveNumber(Float.parseFloat(displayNum));
+            changeActiveNumber(Double.parseDouble(displayNum));
             publishDisplayChange();
         }
     }
@@ -140,20 +144,20 @@ public class Logic {
      * division by zero), it displays an error message.
      */
     public void result() {
-        float result = switch (operator) {
+        double result = switch (operator) {
             case Operator.PLUS -> number1 + number2;
             case Operator.MINUS -> number1 - number2;
             case Operator.MULTI -> number1 * number2;
             case Operator.DIVIDE -> number1 / number2;
             case Operator.NONE -> number1;
-            case Operator.POWER -> (float) Math.pow(number1, number2);
-            case Operator.SQRT -> (float) Math.sqrt(number1);
-            case Operator.SIN -> (float) Math.sin(Math.toRadians(number1));
-            case Operator.COS -> (float) Math.cos(Math.toRadians(number1));
-            case Operator.TAN -> (float) Math.tan(Math.toRadians(number1));
+            case Operator.POWER -> Math.pow(number1, number2);
+            case Operator.SQRT -> Math.sqrt(number1);
+            case Operator.SIN -> Math.sin(Math.toRadians(number1));
+            case Operator.COS -> Math.cos(Math.toRadians(number1));
+            case Operator.TAN -> Math.tan(Math.toRadians(number1));
             case Operator.FACULTY -> faculty((int) number1);
             case Operator.RECOPROCAL -> 1 / number1;
-            case Operator.LOGARITHM -> (float) Math.log10(number1);
+            case Operator.LOGARITHM -> Math.log10(number1);
             case Operator.MODULO -> number1 % number2;
         };
         // Remove trailing zeros and decimal point if result is a whole number
@@ -164,7 +168,7 @@ public class Logic {
             number1 = 0;
             publishDisplayChange("Error");
         } else {
-            number1 = Float.parseFloat(displayNum);
+            number1 = Double.parseDouble(displayNum);
         }
         if (displayNum.equals("0")) displayNum = "";
         number2 = 0;
@@ -189,7 +193,7 @@ public class Logic {
      *
      * @param number the number, that will be the active one
      */
-    private void changeActiveNumber(float number) {
+    private void changeActiveNumber(double number) {
         if (operator == Operator.NONE) {
             number1 = number;
         } else {
@@ -203,12 +207,28 @@ public class Logic {
      * @param n the number to calculate the factorial of
      * @return the factorial of the number
      */
-    private float faculty(int n) {
-        float result = 1;
+    private double faculty(int n) {
+        double result = 1;
         for (int i = 1; i <= n; i++) {
             result *= i;
         }
         return result;
+    }
+
+    /**
+     * Returns the contrasting color for a given background color.
+     *
+     * @param groundColor the background color
+     * @return the contrasting color
+     */
+    public Color getContrastingColor(Color groundColor) {
+        float[] hsbValues = Color.RGBtoHSB(groundColor.getRed(), groundColor.getGreen(), groundColor.getBlue(), null);
+        float brightness = hsbValues[2];
+        if (brightness < 0.5f) {
+            return Color.WHITE;
+        } else {
+            return Color.BLACK;
+        }
     }
 
     /**
@@ -247,12 +267,18 @@ public class Logic {
         }
     }
 
+    /**
+     * Notifies all subscribed listeners that the design change button was pressed.
+     */
     private void publishDesignChange() {
         for (ICalculatorInterface listener : subscribers) {
             listener.designChangePress();
         }
     }
 
+    /**
+     * Notifies all subscribed listeners that the advanced mode button was pressed.
+     */
     private void publishAdvancedMode() {
         for (ICalculatorInterface listener : subscribers) {
             listener.advancedModePress();

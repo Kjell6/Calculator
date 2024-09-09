@@ -8,6 +8,9 @@ import view.customUIs.CustomComboBoxUI;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -16,9 +19,14 @@ import java.util.Map;
  * and load existing designs.
  */
 public class DesignChangeDialog extends JDialog {
-    private final JFrame parentFrame;
+    private final View parentFrame;
     private final Logic logic;
+    JPanel designButtons;
+    JPanel colorButtons;
     private final JComboBox<String> designComboBox;
+    private final String[] buttonTexts = {"Change Background Color", "Change Number Buttons Color",
+            "Change Operator Buttons Color", "Change Equals Button Color", "Save Design", "Delete Design", "Update"};
+    private Map<String, JButton> buttons = new HashMap<>();
 
     /**
      * Constructs a ColorChangeDialog with the specified parent frame and logic.
@@ -26,7 +34,7 @@ public class DesignChangeDialog extends JDialog {
      * @param frame the parent JFrame that the dialog is centered on
      * @param log   the Logic instance used for calculations
      */
-    public DesignChangeDialog(JFrame frame, Logic log) {
+    public DesignChangeDialog(View frame, Logic log) {
         this.parentFrame = frame;
         this.logic = log;
         setTitle("Change Colors");
@@ -36,103 +44,39 @@ public class DesignChangeDialog extends JDialog {
         GridBagConstraints gbc = new GridBagConstraints();
 
         // Color Buttons
-        JPanel colorButtons = new JPanel(new GridLayout(2, 2));
-        JButton changeBackgroundColorButton = new JButton("Change Background Color");
-        JButton changeForegroundColorButton = new JButton("Change Number Buttons Color");
-        JButton changeButtonColorButton = new JButton("Change Operator Buttons Color");
-        JButton changeEqualsColorButton = new JButton("Change Equals Button Color");
-
+        colorButtons = new JPanel(new GridLayout(2, 2));
+        colorButtons.setBackground(Config.BACKGROUND);
         // Design saving and deleting
-        JPanel designButtons = new JPanel(new GridLayout(1, 2));
-        JButton saveButton = new JButton("Save Design");
-        JButton deleteButton = new JButton("Delete Design");
+        designButtons = new JPanel(new GridLayout(1, 2));
+        designButtons.setBackground(Config.BACKGROUND);
+        CustomColorChangingButtonUI ui = new CustomColorChangingButtonUI(logic);
 
+        // Adds buttons to the dialog
+        for (int i = 0; i < buttonTexts.length; i++) {
+            JButton button = new JButton(buttonTexts[i]);
+            buttons.put(buttonTexts[i], button);
+            button.setUI(ui);
+            addToPanel(button);
+            button.addActionListener(e -> {
+                buttonPressed(button.getText());
+            });
+        }
+
+        // COnfigures the ComboBox
         designComboBox = new JComboBox<>(DesignManager.getAllDesignNames());
         designComboBox.setUI(new CustomComboBoxUI());
-
-        //Update Button
-        JButton updateButton = new JButton("Update");
-
-        CustomColorChangingButtonUI ui = new CustomColorChangingButtonUI();
-        changeBackgroundColorButton.setUI(ui);
-        changeForegroundColorButton.setUI(ui);
-        changeButtonColorButton.setUI(ui);
-        changeEqualsColorButton.setUI(ui);
-        updateButton.setUI(ui);
-        saveButton.setUI(ui);
-        deleteButton.setUI(ui);
-
-        //Add Listeners
-        changeBackgroundColorButton.addActionListener(e -> {
-            Color newColor = JColorChooser.showDialog(DesignChangeDialog.this, "Choose Background Color", Config.BACKGROUND);
-            if (newColor != null) {
-                Config.CHANGE_BACKGROUND(newColor);
-            }
-        });
-
-        changeForegroundColorButton.addActionListener(e -> {
-            Color newColor = JColorChooser.showDialog(DesignChangeDialog.this, "Choose Button Color", Config.BUTTON_COLOR);
-            if (newColor != null) {
-                Config.CHANGE_BUTTON_COLOR(newColor);
-            }
-        });
-
-        changeButtonColorButton.addActionListener(e -> {
-            Color newColor = JColorChooser.showDialog(DesignChangeDialog.this, "Choose Operator Color", Config.OPERATOR_COLOR);
-            if (newColor != null) {
-                Config.CHANGE_OPERATOR_COLOR(newColor);
-            }
-        });
-
-        changeEqualsColorButton.addActionListener(e -> {
-            Color newColor = JColorChooser.showDialog(DesignChangeDialog.this, "Choose Equals Color", Config.EQUAL_COLOR);
-            if (newColor != null) {
-                Config.CHANGE_EQUAL_COLOR(newColor);
-            }
-        });
-
-        saveButton.addActionListener(e -> {
-            String name = JOptionPane.showInputDialog(this, "Enter design name:");
-            if (name != null && !name.trim().isEmpty()) {
-                DesignManager.addCurrentDesign(name, Config.BACKGROUND, Config.BUTTON_COLOR, Config.OPERATOR_COLOR, Config.EQUAL_COLOR);
-                updateDesignComboBox();
-            }
-        });
-
         designComboBox.addActionListener(e -> {
             String selectedDesign = (String) designComboBox.getSelectedItem();
             if (selectedDesign != null) {
-                DesignManager.changeActiveDesign(selectedDesign);
+                Map<String, Color> design = DesignManager.getDesignByName(selectedDesign);
+                if (design != null) {
+                    Config.CHANGE_BACKGROUND(design.get("background"));
+                    Config.CHANGE_BUTTON_COLOR(design.get("number"));
+                    Config.CHANGE_OPERATOR_COLOR(design.get("operator"));
+                    Config.CHANGE_EQUAL_COLOR(design.get("equals"));
+                }
             }
         });
-
-        deleteButton.addActionListener(e -> {
-            String selectedDesign = (String) designComboBox.getSelectedItem();
-            if (selectedDesign != null) {
-                DesignManager.deleteDesignByName(selectedDesign);
-                updateDesignComboBox();
-            }
-        });
-
-        // Updates the current Design
-        updateButton.addActionListener(e -> {
-            dispose();
-            parentFrame.dispose();
-            View view = new View(logic);
-            view.changeAdvancedMode();
-        });
-
-        //Adds Color Buttons to Button Panel
-        colorButtons.add(changeBackgroundColorButton);
-        colorButtons.add(changeForegroundColorButton);
-        colorButtons.add(changeButtonColorButton);
-        colorButtons.add(changeEqualsColorButton);
-        colorButtons.setBackground(Config.BACKGROUND);
-
-        //Adds Design Buttons to Design Panel
-        designButtons.add(saveButton);
-        designButtons.add(deleteButton);
-        designButtons.setBackground(Config.BACKGROUND);
 
         // Add components using GridBagLayout
         gbc.fill = GridBagConstraints.BOTH;
@@ -153,10 +97,75 @@ public class DesignChangeDialog extends JDialog {
         gbc.gridy = 3;
         add(designButtons, gbc);
         gbc.gridy = 4;
-        add(updateButton, gbc);
+        add(buttons.get("Update"), gbc);
 
         getContentPane().setBackground(Config.BACKGROUND);
         setVisible(true);
+    }
+
+    private void buttonPressed(String text) {
+        switch (text) {
+            case "Change Background Color":
+                Color newColor = JColorChooser.showDialog(DesignChangeDialog.this, "Choose Background Color", Config.BACKGROUND);
+                if (newColor != null) {
+                    Config.CHANGE_BACKGROUND(newColor);
+                }
+                break;
+            case "Change Number Buttons Color":
+                Color newNumberColor = JColorChooser.showDialog(DesignChangeDialog.this, "Choose Button Color", Config.BUTTON_COLOR);
+                if (newNumberColor != null) {
+                    Config.CHANGE_BUTTON_COLOR(newNumberColor);
+                }
+                break;
+            case "Change Operator Buttons Color":
+                Color newOperatorColor = JColorChooser.showDialog(DesignChangeDialog.this, "Choose Operator Color", Config.OPERATOR_COLOR);
+                if (newOperatorColor != null) {
+                    Config.CHANGE_OPERATOR_COLOR(newOperatorColor);
+                }
+                break;
+            case "Change Equals Button Color":
+                Color newButtonColor = JColorChooser.showDialog(DesignChangeDialog.this, "Choose Equals Color", Config.EQUAL_COLOR);
+                if (newButtonColor != null) {
+                    Config.CHANGE_EQUAL_COLOR(newButtonColor);
+                }
+                break;
+            case "Save Design":
+                String name = JOptionPane.showInputDialog(this, "Enter design name:");
+                if (name != null && !name.trim().isEmpty()) {
+                    DesignManager.addCurrentDesign(name, Config.BACKGROUND, Config.BUTTON_COLOR, Config.OPERATOR_COLOR, Config.EQUAL_COLOR);
+                    updateDesignComboBox();
+                }
+                break;
+            case "Delete Design":
+                String selectedDesign = (String) designComboBox.getSelectedItem();
+                if (selectedDesign != null) {
+                    DesignManager.deleteDesignByName(selectedDesign);
+                    updateDesignComboBox();
+                }
+                break;
+            case "Update":
+                dispose();
+                logic.unsubscribe(parentFrame);
+                this.parentFrame.dispose();
+                View view = new View(logic);
+                view.changeAdvancedMode();
+                break;
+            default:
+                System.out.println("Unknown button pressed");
+        }
+    }
+
+    private void addToPanel(JButton button) {
+        switch (button.getText()) {
+            case "Change Background Color", "Change Number Buttons Color", "Change Operator Buttons Color", "Change Equals Button Color":
+                colorButtons.add(button);
+                break;
+            case "Save Design", "Delete Design":
+                designButtons.add(button);
+                break;
+            case "Update":
+                break;
+        }
     }
 
     /**

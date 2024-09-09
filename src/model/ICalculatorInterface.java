@@ -14,7 +14,13 @@ public interface ICalculatorInterface {
      */
     void displayNull();
 
+    /**
+     * Opens the design change dialog.
+     */
     void designChangePress();
 
+    /**
+     * Toggles the advanced mode.
+     */
     void advancedModePress();
 }
