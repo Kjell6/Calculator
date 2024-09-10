@@ -146,6 +146,7 @@ public class DesignChangeDialog extends JDialog {
                 dispose();
                 logic.unsubscribe(parentFrame);
                 this.parentFrame.dispose();
+                logic.reset();
                 View view = new View(logic);
                 view.changeAdvancedMode();
                 break;

@@ -213,6 +213,14 @@ public class Logic {
         }
     }
 
+    public void reset() {
+        operator = Operator.NONE;
+        number1 = 0;
+        number2 = 0;
+        displayNum = "";
+        displayCalculation = "";
+    }
+
     private float faculty(int n) {
         float result = 1;
         for (int i = 1; i <= n; i++) {
