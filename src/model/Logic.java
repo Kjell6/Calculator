@@ -6,8 +6,8 @@ import java.util.List;
 
 public class Logic {
     private String displayNum;
-    private double number1;
-    private double number2;
+    private float number1;
+    private float number2;
     Operator operator;
     private final List<ICalculatorInterface> subscribers;
 
@@ -50,7 +50,7 @@ public class Logic {
 
     public void numberInput(int number) {
         displayNum += number;
-        changeActiveNumber(Double.parseDouble(displayNum));
+        changeActiveNumber(Float.parseFloat(displayNum));
         publishDisplayChange();
     }
 
@@ -86,44 +86,44 @@ public class Logic {
         } else {
             displayNum = displayNum.substring(0, displayNum.length() - 1);
         }
-        changeActiveNumber(displayNum.isEmpty() ? 0 : Double.parseDouble(displayNum));
+        changeActiveNumber(displayNum.isEmpty() ? 0 : Float.parseFloat(displayNum));
         publishDisplayChange();
     }
 
     public void switchSign() {
         if (!displayNum.isEmpty()) {
             displayNum = (displayNum.charAt(0) == '-') ? displayNum.substring(1) : "-" + displayNum;
-            changeActiveNumber(Double.parseDouble(displayNum));
+            changeActiveNumber(Float.parseFloat(displayNum));
             publishDisplayChange();
         }
     }
 
     public void result() {
-        double result = switch (operator) {
+        float result = switch (operator) {
             case Operator.PLUS -> number1 + number2;
             case Operator.MINUS -> number1 - number2;
             case Operator.MULTI -> number1 * number2;
             case Operator.DIVIDE -> number1 / number2;
             case Operator.NONE -> number1;
-            case Operator.POWER -> Math.pow(number1, number2);
-            case Operator.SQRT -> Math.sqrt(number1);
-            case Operator.SIN -> Math.sin(Math.toRadians(number1));
-            case Operator.COS -> Math.cos(Math.toRadians(number1));
-            case Operator.TAN -> Math.tan(Math.toRadians(number1));
+            case Operator.POWER -> (float) Math.pow(number1, number2);
+            case Operator.SQRT -> (float) Math.sqrt(number1);
+            case Operator.SIN -> (float) Math.sin(Math.toRadians(number1));
+            case Operator.COS -> (float) Math.cos(Math.toRadians(number1));
+            case Operator.TAN -> (float) Math.tan(Math.toRadians(number1));
             case Operator.FACULTY -> faculty((int) number1);
             case Operator.RECOPROCAL -> 1 / number1;
-            case Operator.LOGARITHM -> Math.log10(number1);
+            case Operator.LOGARITHM -> (float) Math.log10(number1);
             case Operator.MODULO -> number1 % number2;
         };
         displayNum = (result + "").replaceAll("0*$", "").replaceAll("\\.$", "");
 
-        if (displayNum.contains("Infinity")|| displayNum.contains("NaN")) {
+        if (displayNum.contains("Infinity") || displayNum.contains("NaN")) {
             displayNum = "";
             number1 = 0;
             publishDisplayChange("Error");
         } else {
             publishDisplayChange();
-            number1 = Double.parseDouble(displayNum);
+            number1 = Float.parseFloat(displayNum);
         }
         if (displayNum.equals("0")) displayNum = "";
         number2 = 0;
@@ -136,6 +136,7 @@ public class Logic {
                 || op == Operator.LOGARITHM;
     }
 
+
     private boolean isOperator(String buttonText) {
         return switch (buttonText) {
             case "+", "-", "×", "÷", "xʸ", "√", "sin", "cos", "tan", "x!", "¹⁄ₓ", "log₁₀", "%" -> true;
@@ -143,7 +144,7 @@ public class Logic {
         };
     }
 
-    private void changeActiveNumber(double number) {
+    private void changeActiveNumber(float number) {
         if (operator == Operator.NONE) {
             number1 = number;
         } else {
@@ -151,8 +152,8 @@ public class Logic {
         }
     }
 
-    private double faculty(int n) {
-        double result = 1;
+    private float faculty(int n) {
+        float result = 1;
         for (int i = 1; i <= n; i++) {
             result *= i;
         }
