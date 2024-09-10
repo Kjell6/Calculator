@@ -249,3 +249,4 @@ public class View extends JFrame implements ICalculatorInterface {
         panel.add(button, gbc);
     }
 }
+

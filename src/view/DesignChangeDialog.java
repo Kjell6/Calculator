@@ -27,7 +27,6 @@ public class DesignChangeDialog extends JDialog {
     private final String[] buttonTexts = {"Change Background Color", "Change Number Buttons Color",
             "Change Operator Buttons Color", "Change Equals Button Color", "Save Design", "Delete Design", "Update"};
     private Map<String, JButton> buttons = new HashMap<>();
-
     /**
      * Constructs a ColorChangeDialog with the specified parent frame and logic.
      *
@@ -175,3 +174,4 @@ public class DesignChangeDialog extends JDialog {
         designComboBox.setModel(new DefaultComboBoxModel<>(DesignManager.getAllDesignNames()));
     }
 }
+
