@@ -10,6 +10,13 @@ public interface ICalculatorInterface {
     void displayNumberChange(String num);
 
     /**
+     * Displays the given calculation on the display.
+     *
+     * @param num the calculation to be displayed
+     */
+    void calculationDisplayChange(String num);
+
+    /**
      * Clears the display, setting it to the default state 0.
      */
     void displayNull();

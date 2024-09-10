@@ -6,6 +6,7 @@ import java.util.List;
 
 public class Logic {
     private String displayNum;
+    private String displayCalculation;
     private float number1;
     private float number2;
     Operator operator;
@@ -17,6 +18,7 @@ public class Logic {
         number1 = 0;
         number2 = 0;
         displayNum = "";
+        displayCalculation = "";
     }
 
     public void buttonPressed(String buttonText) {
@@ -49,6 +51,10 @@ public class Logic {
     }
 
     public void numberInput(int number) {
+        if (operator == Operator.NONE) {
+            displayCalculation = "";
+            publishCalculationDisplayChange();
+        }
         displayNum += number;
         changeActiveNumber(Float.parseFloat(displayNum));
         publishDisplayChange();
@@ -57,6 +63,7 @@ public class Logic {
     public void setOperator(Operator op) {
         operator = op;
         displayNum = "";
+        setDisplayCalculation();
         if (isMonoOperator(op)) {
             result();
         } else {
@@ -77,6 +84,8 @@ public class Logic {
         number2 = 0;
         operator = Operator.NONE;
         displayNum = "";
+        displayCalculation = "";
+        publishCalculationDisplayChange();
         publishDisplayChange();
     }
 
@@ -88,6 +97,10 @@ public class Logic {
         }
         changeActiveNumber(displayNum.isEmpty() ? 0 : Float.parseFloat(displayNum));
         publishDisplayChange();
+        if (operator == Operator.NONE) {
+            displayCalculation = "";
+            publishCalculationDisplayChange();
+        }
     }
 
     public void switchSign() {
@@ -95,6 +108,10 @@ public class Logic {
             displayNum = (displayNum.charAt(0) == '-') ? displayNum.substring(1) : "-" + displayNum;
             changeActiveNumber(Float.parseFloat(displayNum));
             publishDisplayChange();
+        }
+        if (operator == Operator.NONE) {
+            displayCalculation = "";
+            publishCalculationDisplayChange();
         }
     }
 
@@ -117,6 +134,21 @@ public class Logic {
         };
         displayNum = (result + "").replaceAll("0*$", "").replaceAll("\\.$", "");
 
+        //Formats the Calculation Display
+        if (isMonoOperator(operator)) {
+            if (operator == Operator.RECOPROCAL || operator == Operator.SQRT) {
+                displayCalculation = getOperatorString() + formatNumber(String.valueOf(number1));
+            } else if (operator == Operator.FACULTY) {
+                displayCalculation = formatNumber(String.valueOf(number1)) + "!";
+            } else {
+                displayCalculation = getOperatorString() + "(" + formatNumber(String.valueOf(number1)) + ")";
+            }
+        } else {
+            displayCalculation = formatNumber(String.valueOf(number1)) + " " + getOperatorString() + " " + formatNumber(String.valueOf(number2));
+        }
+        publishCalculationDisplayChange();
+
+        //Formats the Display
         if (displayNum.contains("Infinity") || displayNum.contains("NaN")) {
             displayNum = "";
             number1 = 0;
@@ -136,6 +168,35 @@ public class Logic {
                 || op == Operator.LOGARITHM;
     }
 
+    private void setDisplayCalculation() {
+        displayCalculation = formatNumber(String.valueOf(number1)) + " " + getOperatorString();
+        publishCalculationDisplayChange();
+    }
+
+    private String getOperatorString() {
+        return switch (operator) {
+            case PLUS -> "+";
+            case MINUS -> "-";
+            case MULTI -> "×";
+            case DIVIDE -> "÷";
+            case POWER -> "^";
+            case SQRT -> "√";
+            case SIN -> "sin";
+            case COS -> "cos";
+            case TAN -> "tan";
+            case FACULTY -> "!";
+            case RECOPROCAL -> "1/";
+            case LOGARITHM -> "log";
+            case MODULO -> "%";
+            case NONE -> "";
+        };
+    }
+
+    private String formatNumber(String number) {
+        String result = number.replaceAll("0+$", "");
+        result = result.replaceAll("\\.$", "");
+        return result;
+    }
 
     private boolean isOperator(String buttonText) {
         return switch (buttonText) {
@@ -181,6 +242,12 @@ public class Logic {
     private void publishDisplayChange() {
         for (ICalculatorInterface listener : subscribers) {
             listener.displayNumberChange(displayNum);
+        }
+    }
+
+    private void publishCalculationDisplayChange() {
+        for (ICalculatorInterface listener : subscribers) {
+            listener.calculationDisplayChange(displayCalculation);
         }
     }
 

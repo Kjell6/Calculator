@@ -1,7 +1,6 @@
 package view;
 
 import config.Config;
-import model.DesignManager;
 import model.ICalculatorInterface;
 import model.Logic;
 import view.customUIs.CustomButtonUI;
@@ -27,7 +26,8 @@ public class View extends JFrame implements ICalculatorInterface {
             "xʸ", "🎨", "√", "sin", "cos", "tan", "x!", "¹⁄ₓ", "log₁₀", "%"
     };
     private JButton[][] buttonsArray = new JButton[buttonTexts.length][buttonTexts[0].length];
-    private JTextPane display;
+    private JTextPane numberInputDisplay;
+    private JTextPane calculationDisplay;
 
     // UI-Elemente
     private final CustomButtonUI buttonUI;
@@ -41,17 +41,21 @@ public class View extends JFrame implements ICalculatorInterface {
         this.logic = l;
         logic.subscribe(this);
 
-        // Sets the Design to the last used one
-        //DesignManager.changeActiveDesign(DesignManager.getActiveDesign());
-
         // Main panel with BorderLayout
         JPanel mainPanel = new JPanel(new BorderLayout());
 
-        // Display at the top
-        display = initializeDisplay();
-        JScrollPane scrollPane = new JScrollPane(display);
+        // numberInputDisplay that shows the calculation
+        calculationDisplay = initializeDisplay(Color.gray, (Config.WIDTH / 18));
+        JScrollPane scrollPanePrevious = new JScrollPane(calculationDisplay);
+        initializeScrollPane(scrollPanePrevious);
+        mainPanel.add(scrollPanePrevious, BorderLayout.NORTH);
+
+        // Display with the Number Input at the top
+        numberInputDisplay = initializeDisplay(logic.getContrastingColor(Config.BACKGROUND), (Config.WIDTH / 6));
+        numberInputDisplay.setText("0"); // Set initial text
+        JScrollPane scrollPane = new JScrollPane(numberInputDisplay);
         initializeScrollPane(scrollPane);
-        mainPanel.add(scrollPane, BorderLayout.NORTH);
+        mainPanel.add(scrollPane, BorderLayout.CENTER);
 
         // Button panel with GridBagLayout
         JPanel buttonPanel = new JPanel(new GridBagLayout());
@@ -85,7 +89,7 @@ public class View extends JFrame implements ICalculatorInterface {
             }
         }
 
-        mainPanel.add(buttonPanel, BorderLayout.CENTER);
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
         mainPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
         add(mainPanel); //To have the Border
 
@@ -106,22 +110,32 @@ public class View extends JFrame implements ICalculatorInterface {
     }
 
     /**
-     * Displays the given number on the display.
+     * Displays the given number on the numberInputDisplay.
      *
      * @param number the number to be displayed
      */
     @Override
     public void displayNumberChange(String number) {
-        display.setText(number);
-        if (number.isEmpty()) display.setText("0");
+        numberInputDisplay.setText(number);
+        if (number.isEmpty()) numberInputDisplay.setText("0");
     }
 
     /**
-     * Clears the display, setting it to the default state 0.
+     * Displays the given calculation on the numberInputDisplay.
+     *
+     * @param num the calculation to be displayed
+     */
+    @Override
+    public void calculationDisplayChange(String num) {
+        calculationDisplay.setText(num);
+    }
+
+    /**
+     * Clears the numberInputDisplay, setting it to the default state 0.
      */
     @Override
     public void displayNull() {
-        display.setText("");
+        numberInputDisplay.setText("");
     }
 
     /**
@@ -192,26 +206,25 @@ public class View extends JFrame implements ICalculatorInterface {
     }
 
     /**
-     * Initializes the display.
+     * Initializes the numberInputDisplay.
      *
-     * @return the initialized display
+     * @return the initialized numberInputDisplay
      */
-    private JTextPane initializeDisplay() {
+    private JTextPane initializeDisplay(Color color, int size) {
         JTextPane display = new JTextPane();
         display.setEditable(false);
         display.setBackground(Config.BACKGROUND);
-        display.setForeground(logic.getContrastingColor(Config.BACKGROUND));
-        display.setFont(new Font("Helvetica", Font.PLAIN, (Config.WIDTH / 6) - 1));
-        display.setPreferredSize(new Dimension(Config.WIDTH, Config.WIDTH / 6));
-        display.setText("0"); // Set initial text
+        display.setForeground(color);
+        display.setFont(new Font("Helvetica", Font.PLAIN, size - 1));
+        display.setPreferredSize(new Dimension(Config.WIDTH, size));
         alignDisplayTextRight(display);
         return display;
     }
 
     /**
-     * Aligns the text in the display to the right.
+     * Aligns the text in the numberInputDisplay to the right.
      *
-     * @param display the display to align
+     * @param display the numberInputDisplay to align
      */
     private void alignDisplayTextRight(JTextPane display) {
         StyledDocument doc = display.getStyledDocument();
