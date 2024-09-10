@@ -20,6 +20,9 @@ public class Logic {
     }
 
     public void buttonPressed(String buttonText) {
+        if (operator != Operator.NONE && isOperator(buttonText)) {
+            result();
+        }
         switch (buttonText) {
             case "C" -> clear();
             case "⌫" -> deleteChar();
@@ -131,6 +134,13 @@ public class Logic {
         return op == Operator.SQRT || op == Operator.SIN || op == Operator.COS
                 || op == Operator.TAN || op == Operator.FACULTY || op == Operator.RECOPROCAL
                 || op == Operator.LOGARITHM;
+    }
+
+    private boolean isOperator(String buttonText) {
+        return switch (buttonText) {
+            case "+", "-", "×", "÷", "xʸ", "√", "sin", "cos", "tan", "x!", "¹⁄ₓ", "log₁₀", "%" -> true;
+            default -> false;
+        };
     }
 
     private void changeActiveNumber(double number) {
