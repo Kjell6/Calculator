@@ -195,6 +195,9 @@ public class Logic {
     private String formatNumber(String number) {
         String result = number.replaceAll("0+$", "");
         result = result.replaceAll("\\.$", "");
+        if (result.equals("-0")) {
+            result = "0";
+        }
         return result;
     }
 
