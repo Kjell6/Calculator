@@ -132,7 +132,7 @@ public class Logic {
             case Operator.LOGARITHM -> (float) Math.log10(number1);
             case Operator.MODULO -> number1 % number2;
         };
-        displayNum = (result + "").replaceAll("0*$", "").replaceAll("\\.$", "");
+        displayNum = formatNumber(result + "");
 
         //Formats the Calculation Display
         if (isMonoOperator(operator)) {
